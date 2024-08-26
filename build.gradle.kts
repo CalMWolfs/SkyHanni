@@ -155,16 +155,16 @@ dependencies {
 
     modRuntimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.1.0")
 
-    modCompileOnly("com.github.hannibal002:notenoughupdates:4957f0b:all") {
-        exclude(module = "unspecified")
-        isTransitive = false
-    }
+//     modCompileOnly("com.github.hannibal002:notenoughupdates:4957f0b:all") {
+//         exclude(module = "unspecified")
+//         isTransitive = false
+//     }
     // June 3, 2024, 9:30 PM AEST
     // https://github.com/NotEnoughUpdates/NotEnoughUpdates/tree/2.3.0
-    devenvMod("com.github.NotEnoughUpdates:NotEnoughUpdates:2.3.0:all") {
-        exclude(module = "unspecified")
-        isTransitive = false
-    }
+//     devenvMod("com.github.NotEnoughUpdates:NotEnoughUpdates:2.3.0:all") {
+//         exclude(module = "unspecified")
+//         isTransitive = false
+//     }
 
     shadowModImpl(libs.moulconfig)
     shadowImpl(libs.libautoupdate) {
@@ -173,10 +173,10 @@ dependencies {
     shadowImpl("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
     implementation(libs.hotswapagentforge)
 
-    testImplementation("com.github.NotEnoughUpdates:NotEnoughUpdates:faf22b5dd9:all") {
-        exclude(module = "unspecified")
-        isTransitive = false
-    }
+//     testImplementation("com.github.NotEnoughUpdates:NotEnoughUpdates:faf22b5dd9:all") {
+//         exclude(module = "unspecified")
+//         isTransitive = false
+//     }
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("io.mockk:mockk:1.12.5")
 
