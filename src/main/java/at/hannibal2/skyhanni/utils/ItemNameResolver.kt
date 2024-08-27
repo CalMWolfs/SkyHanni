@@ -1,11 +1,11 @@
 package at.hannibal2.skyhanni.utils
 
+import at.hannibal2.skyhanni.api.enoughupdates.NewItemResolutionQuery
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.allLettersFirstUppercase
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
-import io.github.moulberry.notenoughupdates.util.ItemResolutionQuery
 
 object ItemNameResolver {
     private val itemNameCache = mutableMapOf<String, NEUInternalName>() // item name -> internal name
@@ -45,7 +45,9 @@ object ItemNameResolver {
                         else -> ' '
                     }
                 } ${split.joinToString("_").allLettersFirstUppercase()}"
-                ItemResolutionQuery.findInternalNameByDisplayName(gemstoneQuery, true)?.let {
+
+                // todo neuneu
+                NewItemResolutionQuery.findInternalNameByDisplayName(gemstoneQuery, true)?.let {
                     return itemNameCache.getOrPut(lowercase) { it.asInternalName() }
                 }
             }
@@ -54,7 +56,8 @@ object ItemNameResolver {
         val internalName = when (itemName) {
             "SUPERBOOM TNT" -> "SUPERBOOM_TNT".asInternalName()
             else -> {
-                ItemResolutionQuery.findInternalNameByDisplayName(itemName, true)?.let {
+                // todo neuneu
+                NewItemResolutionQuery.findInternalNameByDisplayName(itemName, true)?.let {
 
                     // This fixes a NEU bug with §9Hay Bale (cosmetic item)
                     // TODO remove workaround when this is fixed in neu
@@ -73,7 +76,7 @@ object ItemNameResolver {
         UtilsPatterns.enchantmentNamePattern.matchMatcher(enchantmentName) {
             val name = group("name").trim { it <= ' ' }
             val ultimate = group("format").lowercase().contains("§l")
-                ((if (ultimate && name != "Ultimate Wise" && name != "Ultimate Jerry") "ULTIMATE_" else "")
+            ((if (ultimate && name != "Ultimate Wise" && name != "Ultimate Jerry") "ULTIMATE_" else "")
                 + turboCheck(name).replace(" ", "_").replace("-", "_").uppercase()
                 + ";" + group("level").romanToDecimal())
         }

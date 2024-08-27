@@ -30,6 +30,8 @@ object FirstMinionTier {
     ) {
         for (minionId in tierOneMinionsFiltered) {
             for (recipe in NEUItems.getRecipes(minionId)) {
+
+                // todo neuneu
                 if (recipe !is CraftingRecipe) continue
                 checkOne(recipe, help, minions, minionId)
             }
@@ -37,6 +39,7 @@ object FirstMinionTier {
     }
 
     private fun checkOne(
+        // todo neuneu
         recipe: CraftingRecipe,
         help: Map<NEUInternalName, Int>,
         minions: MutableMap<String, NEUInternalName>,

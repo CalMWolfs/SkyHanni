@@ -13,11 +13,13 @@ import io.github.moulberry.notenoughupdates.recipes.NeuRecipe
 
 object ItemPriceUtils {
 
+    // todo neuneu
     fun NEUInternalName.getPrice(
         priceSource: ItemPriceSource = ItemPriceSource.BAZAAR_INSTANT_BUY,
         pastRecipes: List<NeuRecipe> = emptyList(),
     ) = getPriceOrNull(priceSource, pastRecipes) ?: 0.0
 
+    // todo neuneu
     fun NEUInternalName.getPriceOrNull(
         priceSource: ItemPriceSource = ItemPriceSource.BAZAAR_INSTANT_BUY,
         pastRecipes: List<NeuRecipe> = emptyList(),
@@ -58,6 +60,7 @@ object ItemPriceUtils {
 
     // We can not use NEU craft cost, since we want to respect the price source choice
     // NEUItems.manager.auctionManager.getCraftCost(asString())?.craftCost
+    // todo neuneu
     fun NEUInternalName.getRawCraftCostOrNull(
         priceSource: ItemPriceSource = ItemPriceSource.BAZAAR_INSTANT_BUY,
         pastRecipes: List<NeuRecipe> = emptyList(),

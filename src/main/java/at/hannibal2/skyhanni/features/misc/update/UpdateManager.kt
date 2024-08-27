@@ -113,6 +113,7 @@ object UpdateManager {
                 } else if (forceDownload) {
                     ChatUtils.chat("§aSkyHanni didn't find a new update.")
                 }
+                // todo neuneu
             }, MinecraftExecutor.OnThread)
     }
 
@@ -130,6 +131,7 @@ object UpdateManager {
             potentialUpdate!!.executePreparedUpdate()
             ChatUtils.chat("Download of update complete. ")
             ChatUtils.chat("§aThe update will be installed after your next restart.")
+            // todo neuneu
         }, MinecraftExecutor.OnThread)
     }
 
@@ -161,6 +163,7 @@ object UpdateManager {
         context.cleanup()
         UpdateUtils.patchConnection {
             if (it is HttpsURLConnection) {
+                // todo neuneu
                 ApiUtil.patchHttpsRequest(it)
             }
         }

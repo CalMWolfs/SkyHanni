@@ -71,6 +71,7 @@ object CraftableItemList {
 
             val recipes = NEUItems.getRecipes(internalName)
             for (recipe in recipes) {
+                // todo neuneu
                 if (recipe !is CraftingRecipe) continue
                 val renderable = createItemRenderable(recipe, availableMaterial, pricePer, internalName) ?: continue
                 lines[internalName] = renderable
@@ -78,6 +79,7 @@ object CraftableItemList {
         }
     }
 
+    // todo neuneu
     private fun createItemRenderable(
         recipe: CraftingRecipe,
         availableMaterial: Map<NEUInternalName, Long>,

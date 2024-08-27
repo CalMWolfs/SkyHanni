@@ -180,6 +180,7 @@ class DefaultConfigOptionGui(
         GlStateManager.popMatrix()
         GlScissorStack.pop(scaledResolution)
         if (hoveringTextToDraw != null) {
+            // todo neuneu
             Utils.drawHoveringText(hoveringTextToDraw, mouseX, mouseY, width, height, 100, mc.fontRendererObj)
         }
     }

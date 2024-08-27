@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.utils.system
 
+import at.hannibal2.skyhanni.api.enoughupdates.EnoughUpdatesManager
 import net.minecraft.launchwrapper.Launch
 import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.ModContainer
@@ -9,6 +10,32 @@ import net.minecraftforge.fml.common.ModContainer
  * i.e. operations that are specific to the mod loader or the environment the mod is running in.
  */
 object PlatformUtils {
+
+    var validNeuInstalled = false
+
+    @JvmStatic
+    fun checkIfNeuIsLoaded() {
+        try {
+            Class.forName("io.github.moulberry.notenoughupdates.NotEnoughUpdates")
+        } catch (e: Throwable) {
+            EnoughUpdatesManager.downloadRepo()
+            return
+        }
+
+        try {
+            val clazz = Class.forName("io.github.moulberry.notenoughupdates.util.ItemResolutionQuery")
+
+            for (field in clazz.methods) {
+                if (field.name == "findInternalNameByDisplayName") {
+                    validNeuInstalled = true
+                    return
+                }
+            }
+        } catch (_: Throwable) {
+        }
+        EnoughUpdatesManager.downloadRepo()
+    }
+
 
     private val modPackages: Map<String, ModContainer> by lazy {
         Loader.instance().modList

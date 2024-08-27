@@ -32,10 +32,10 @@ import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.json.toJsonArray
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import com.google.gson.Gson
 import com.google.gson.JsonPrimitive
-import io.github.moulberry.notenoughupdates.util.toJsonArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -66,7 +66,7 @@ object GardenNextJacobContest {
     private val patternGroup = RepoPattern.group("garden.nextcontest")
     val dayPattern by patternGroup.pattern(
         "day",
-        "§aDay (?<day>.*)"
+        "§aDay (?<day>.*)",
     )
 
     /**
@@ -77,11 +77,11 @@ object GardenNextJacobContest {
 
     val monthPattern by patternGroup.pattern(
         "month",
-        "(?<month>(?:\\w+ )?(?:Summer|Spring|Winter|Autumn)), Year (?<year>\\d+)"
+        "(?<month>(?:\\w+ )?(?:Summer|Spring|Winter|Autumn)), Year (?<year>\\d+)",
     )
     private val cropPattern by patternGroup.pattern(
         "crop",
-        "§(e○|6☘) §7(?<crop>.*)"
+        "§(e○|6☘) §7(?<crop>.*)",
     )
 
     private const val CLOSE_TO_NEW_YEAR_TEXT = "§7Close to new SB year!"
@@ -254,7 +254,7 @@ object GardenNextJacobContest {
                         "§2Click here to submit this year's farming contests. Thank you for helping everyone out!",
                         onClick = { shareContests() },
                         "§eClick to submit!",
-                        oneTimeClick = true
+                        oneTimeClick = true,
                     )
                 }
             }
@@ -310,7 +310,7 @@ object GardenNextJacobContest {
                     ChatUtils.chat("§2Enabled automatic sharing of future contests!")
                 },
                 "§eClick to enable autosharing!",
-                oneTimeClick = true
+                oneTimeClick = true,
             )
         }
     }
@@ -441,7 +441,7 @@ object GardenNextJacobContest {
             SkyHanniMod.coroutineScope.launch {
                 openPopupWindow(
                     "<html>Farming Contest soon!<br />" +
-                        "Crops: ${cropTextNoColor}</html>"
+                            "Crops: ${cropTextNoColor}</html>",
                 )
             }
         }
@@ -456,7 +456,7 @@ object GardenNextJacobContest {
         } catch (e: java.lang.Exception) {
             ErrorManager.logErrorWithData(
                 e, "Failed to open a popup window",
-                "message" to message
+                "message" to message,
             )
         }
 
@@ -468,11 +468,13 @@ object GardenNextJacobContest {
 
         val buttons = mutableListOf<JButton>()
         val close = JButton("Ok")
-        close.addMouseListener(object : MouseAdapter() {
-            override fun mouseClicked(event: MouseEvent) {
-                frame.isVisible = false
-            }
-        })
+        close.addMouseListener(
+            object : MouseAdapter() {
+                override fun mouseClicked(event: MouseEvent) {
+                    frame.isVisible = false
+                }
+            },
+        )
         buttons.add(close)
 
         val allOptions = buttons.toTypedArray()
@@ -484,7 +486,7 @@ object GardenNextJacobContest {
             JOptionPane.INFORMATION_MESSAGE,
             null,
             allOptions,
-            allOptions[0]
+            allOptions[0],
         )
     }
 
@@ -509,7 +511,7 @@ object GardenNextJacobContest {
         if (display.isNotEmpty()) {
             SkyHanniMod.feature.misc.inventoryLoadPos.renderSingleLineWithItems(
                 display,
-                posLabel = "Load SkyBlock Calendar"
+                posLabel = "Load SkyBlock Calendar",
             )
         }
     }
@@ -567,7 +569,7 @@ object GardenNextJacobContest {
                 ChatUtils.clickableChat(
                     "Click here to open your calendar!",
                     onClick = { HypixelCommands.calendar() },
-                    "§eClick to run /calendar!"
+                    "§eClick to run /calendar!",
                 )
             }
 
@@ -584,7 +586,7 @@ object GardenNextJacobContest {
         } catch (e: Exception) {
             ErrorManager.logErrorWithData(
                 e,
-                "Failed to fetch upcoming contests. Please report this error if it continues to occur"
+                "Failed to fetch upcoming contests. Please report this error if it continues to occur",
             )
 
         }
@@ -620,13 +622,13 @@ object GardenNextJacobContest {
         } else {
             ErrorManager.logErrorStateWithData(
                 "Something went wrong submitting upcoming contests!",
-                "submitContestsToElite not successful"
+                "submitContestsToElite not successful",
             )
         }
     } catch (e: Exception) {
         ErrorManager.logErrorWithData(
             e, "Failed to submit upcoming contests. Please report this error if it continues to occur.",
-            "contests" to contests
+            "contests" to contests,
         )
         null
     }

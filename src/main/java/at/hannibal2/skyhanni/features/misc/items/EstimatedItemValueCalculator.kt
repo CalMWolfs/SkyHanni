@@ -745,6 +745,7 @@ object EstimatedItemValueCalculator {
 
             val previousTotal = totalPrice
             for (ingredients in slot.value) {
+                // todo neuneu
                 val ingredient = Ingredient(NEUItems.manager, ingredients)
 
                 totalPrice += if (ingredient.isCoins) {

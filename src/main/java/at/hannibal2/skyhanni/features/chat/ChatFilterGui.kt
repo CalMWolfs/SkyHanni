@@ -87,6 +87,7 @@ class ChatFilterGui(private val history: List<ChatManager.MessageFilteringResult
         wasMouseButtonDown = isMouseButtonDown
         GlStateManager.popMatrix()
         if (queuedTooltip != null) {
+            // todo neuneu
             Utils.drawHoveringText(queuedTooltip, originalMouseX, originalMouseY, width, height, -1, mc.fontRendererObj)
         }
         GlStateManager.color(1f, 1f, 1f, 1f)

@@ -19,6 +19,7 @@ import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
+import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzLogger
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
@@ -29,6 +30,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.UtilsPatterns
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import com.google.gson.JsonObject
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates
 import net.minecraft.client.Minecraft
@@ -359,7 +361,11 @@ object HypixelData {
             lastLocRaw = SimpleTimeMark.now()
             thread(start = true) {
                 Thread.sleep(1000)
-                NotEnoughUpdates.INSTANCE.sendChatMessage("/locraw")
+                if (PlatformUtils.validNeuInstalled) {
+                    NotEnoughUpdates.INSTANCE.sendChatMessage("/locraw")
+                } else {
+                    HypixelCommands.locraw()
+                }
             }
         }
     }

@@ -112,6 +112,7 @@ object SkyHanniConfigSearchResetCommand {
 
         val element = ConfigManager.gson.fromJson(rawJson, JsonElement::class.java)
         val list = term.split(".").drop(1)
+        // todo neuneu
         val shimmy = Shimmy.makeShimmy(root, list) ?: return "§cCould not change config element '$term', not found!"
         return try {
             shimmy.setJson(element)

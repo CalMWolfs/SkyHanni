@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.utils
 
+import at.hannibal2.skyhanni.api.enoughupdates.NewItemResolutionQuery
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.data.jsonobjects.other.HypixelApiTrophyFish
 import at.hannibal2.skyhanni.data.jsonobjects.other.HypixelPlayerApiJson
@@ -32,8 +33,6 @@ import io.github.moulberry.notenoughupdates.overlays.BazaarSearchOverlay
 import io.github.moulberry.notenoughupdates.recipes.CraftingRecipe
 import io.github.moulberry.notenoughupdates.recipes.Ingredient
 import io.github.moulberry.notenoughupdates.recipes.NeuRecipe
-import io.github.moulberry.notenoughupdates.util.ItemResolutionQuery
-import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GLAllocation
 import net.minecraft.client.renderer.GlStateManager
@@ -54,6 +53,7 @@ import at.hannibal2.skyhanni.utils.ItemPriceUtils.getRawCraftCostOrNull as getRa
 @SkyHanniModule
 object NEUItems {
 
+    // todo neuneu
     val manager: NEUManager get() = NotEnoughUpdates.INSTANCE.manager
     private val multiplierCache = mutableMapOf<NEUInternalName, PrimitiveItemStack>()
     private val recipesCache = mutableMapOf<NEUInternalName, Set<NeuRecipe>>()
@@ -99,7 +99,7 @@ object NEUItems {
     val ignoreItemsFilter = MultiFilter()
 
     private val fallbackItem by lazy {
-        Utils.createItemStack(
+        ItemUtils.createItemStack(
             ItemStack(Blocks.barrier).item,
             "§cMissing Repo Item",
             "§cYour NEU repo seems to be out of date",
@@ -161,15 +161,27 @@ object NEUItems {
         return map
     }
 
-    fun getInternalName(itemStack: ItemStack): String? = ItemResolutionQuery(manager)
-        .withCurrentGuiContext()
-        .withItemStack(itemStack)
-        .resolveInternalName()
+    fun getInternalName(itemStack: ItemStack): String? {
+        return if (PlatformUtils.validNeuInstalled) {
+            ItemResolutionQuery(manager)
+                .withCurrentGuiContext()
+                .withItemStack(itemStack)
+                .resolveInternalName()
+        } else {
+            NewItemResolutionQuery().withItemStack(itemStack).resolveInternalName()
+        }
+    }
 
-    fun getInternalNameOrNull(nbt: NBTTagCompound): NEUInternalName? =
-        ItemResolutionQuery(manager).withItemNBT(nbt).resolveInternalName()?.asInternalName()
+    fun getInternalNameOrNull(nbt: NBTTagCompound): NEUInternalName? {
+        return if (PlatformUtils.validNeuInstalled) {
+            ItemResolutionQuery(manager).withItemNBT(nbt).resolveInternalName()?.asInternalName()
+        } else {
+            NewItemResolutionQuery().withItemNbt(nbt).resolveInternalName().asInternalName()
+        }
+    }
 
     @Deprecated("Moved to ItemPriceUtils", ReplaceWith(""))
+    // todo neuneu
     fun NEUInternalName.getPrice(
         priceSource: ItemPriceSource = ItemPriceSource.BAZAAR_INSTANT_BUY,
         pastRecipes: List<NeuRecipe> = emptyList(),
@@ -185,18 +197,27 @@ object NEUItems {
         manager.auctionManager.transformHypixelBazaarToNEUItemId(hypixelId).asInternalName()
 
     @Deprecated("Moved to ItemPriceUtils", ReplaceWith(""))
+    // todo neuneu
     fun NEUInternalName.getPriceOrNull(
         priceSource: ItemPriceSource = ItemPriceSource.BAZAAR_INSTANT_BUY,
         pastRecipes: List<NeuRecipe> = emptyList(),
     ): Double? = this.getPriceOrNullNew(priceSource, pastRecipes)
 
     @Deprecated("Moved to ItemPriceUtils", ReplaceWith(""))
+    // todo neuneu
     fun NEUInternalName.getRawCraftCostOrNull(pastRecipes: List<NeuRecipe> = emptyList()): Double? =
         getRawCraftCostOrNullNew(ItemPriceSource.BAZAAR_INSTANT_BUY, pastRecipes)
 
-    fun NEUInternalName.getItemStackOrNull(): ItemStack? = ItemResolutionQuery(manager)
-        .withKnownInternalName(asString())
-        .resolveToItemStack()?.copy()
+    // todo neuneu
+    fun NEUInternalName.getItemStackOrNull(): ItemStack? {
+        return if (PlatformUtils.validNeuInstalled) {
+            ItemResolutionQuery(manager)
+                .withKnownInternalName(asString())
+                .resolveToItemStack()?.copy()
+        } else {
+            NewItemResolutionQuery().withKnownInternalName(asString()).resolveToItemStack()?.copy()
+        }
+    }
 
     fun getItemStackOrNull(internalName: String) = internalName.asInternalName().getItemStackOrNull()
 
@@ -274,6 +295,7 @@ object NEUItems {
         }
     }
 
+    // todo neuneu
     fun allNeuRepoItems(): Map<String, JsonObject> = NotEnoughUpdates.INSTANCE.manager.itemInformation
 
     fun getInternalNamesForItemId(item: Item): List<NEUInternalName> {
@@ -298,6 +320,7 @@ object NEUItems {
             return internalName.makePrimitiveStack()
         }
         for (recipe in getRecipes(internalName)) {
+            // todo neuneu
             if (recipe !is CraftingRecipe) continue
 
             val map = mutableMapOf<NEUInternalName, Int>()
@@ -325,6 +348,8 @@ object NEUItems {
                 }
 
                 val old = map.getOrDefault(internalItemId, 0)
+
+                // todo neuneu
                 map[internalItemId] = old + count
             }
             if (map.size != 1) continue
@@ -345,15 +370,18 @@ object NEUItems {
         return result
     }
 
+    // todo neuneu
     fun getRecipes(internalName: NEUInternalName): Set<NeuRecipe> {
         return recipesCache.getOrPut(internalName) {
             manager.getRecipesFor(internalName.asString())
         }
     }
 
+    // todo neuneu
     fun NeuRecipe.getCachedIngredients() = ingredientsCache.getOrPut(this) { allIngredients() }
 
     fun neuHasFocus(): Boolean {
+        if (!PlatformUtils.validNeuInstalled) return false
         if (AuctionSearchOverlay.shouldReplace()) return true
         if (BazaarSearchOverlay.shouldReplace()) return true
         // TODO add RecipeSearchOverlay via RecalculatingValue and reflection
@@ -381,5 +409,6 @@ object NEUItems {
         return manager.jsonToStack(jsonObject, false)
     }
 
+    // todo neuneu
     fun NeuRecipe.allIngredients(): Set<Ingredient> = ingredients
 }

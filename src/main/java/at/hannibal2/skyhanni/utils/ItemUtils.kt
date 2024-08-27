@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.ItemPriceUtils.getPrice
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
+import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
@@ -24,6 +25,7 @@ import io.github.moulberry.notenoughupdates.recipes.NeuRecipe
 import io.github.moulberry.notenoughupdates.util.NotificationHandler
 import net.minecraft.client.Minecraft
 import net.minecraft.init.Items
+import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
@@ -46,8 +48,12 @@ object ItemUtils {
     fun isSack(stack: ItemStack) = stack.getInternalName().endsWith("_SACK") && stack.cleanName().endsWith(" Sack")
 
     fun ItemStack.getLore(): List<String> {
-        val tagCompound = this.tagCompound ?: return emptyList()
-        val tagList = tagCompound.getCompoundTag("display").getTagList("Lore", 8)
+        return this.tagCompound.getLore()
+    }
+
+    fun NBTTagCompound?.getLore(): List<String> {
+        this ?: return emptyList()
+        val tagList: NBTTagList = this.getCompoundTag("display").getTagList("Lore", 8)
         val list: MutableList<String> = ArrayList()
         for (i in 0 until tagList.tagCount()) {
             list.add(tagList.getStringTagAt(i))
@@ -55,7 +61,15 @@ object ItemUtils {
         return list
     }
 
-    val ItemStack.extraAttributes: NBTTagCompound get() = this.tagCompound.getCompoundTag("ExtraAttributes")
+    fun getDisplayName(compound: NBTTagCompound?): String? {
+        compound ?: return null
+        val name = compound.getCompoundTag("display").getString("Name")
+        if (name == null || name.isEmpty()) return null
+        return name
+    }
+
+    val ItemStack.extraAttributes: NBTTagCompound get() = this.tagCompound.extraAttributes
+    val NBTTagCompound.extraAttributes: NBTTagCompound get() = this.getCompoundTag("ExtraAttributes")
 
     // TODO change else janni is sad
     fun ItemStack.isCoopSoulBound(): Boolean =
@@ -164,6 +178,20 @@ object ItemUtils {
         return render
     }
 
+    fun createItemStack(item: Item, displayName: String, vararg lore: String): ItemStack {
+        return createItemStack(item, displayName, lore.toList())
+    }
+
+    // Taken from NEU
+    fun createItemStack(item: Item, displayName: String, lore: List<String>, amount: Int = 1, damage: Int = 0): ItemStack {
+        val stack = ItemStack(item, amount, damage)
+        val tag = NBTTagCompound()
+        addNameAndLore(tag, displayName, *lore.toTypedArray())
+        tag.setInteger("HideFlags", 254)
+        stack.tagCompound = tag
+        return stack
+    }
+
     // Taken from NEU
     private fun addNameAndLore(tag: NBTTagCompound, displayName: String, vararg lore: String) {
         val display = NBTTagCompound()
@@ -176,6 +204,19 @@ object ItemUtils {
             display.setTag("Lore", tagLore)
         }
         tag.setTag("display", display)
+    }
+
+    fun createCoinItemStack(amount: Double): ItemStack {
+        val (uuid, texture) = when {
+            amount < 100_000 -> Pair("2070f6cb-f5db-367a-acd0-64d39a7e5d1b", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTM4MDcxNzIxY2M1YjRjZDQwNmNlNDMxYTEzZjg2MDgzYTg5NzNlMTA2NGQyZjg4OTc4Njk5MzBlZTZlNTIzNyJ9fX0=")
+            amount < 10_000_000 -> Pair("94fa2455-2881-31fe-bb4e-e3e24d58dbe3", "eyJ0aW1lc3RhbXAiOjE2MzU5NTczOTM4MDMsInByb2ZpbGVJZCI6ImJiN2NjYTcxMDQzNDQ0MTI4ZDMwODllMTNiZGZhYjU5IiwicHJvZmlsZU5hbWUiOiJsYXVyZW5jaW8zMDMiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2M5Yjc3OTk5ZmVkM2EyNzU4YmZlYWYwNzkzZTUyMjgzODE3YmVhNjQwNDRiZjQzZWYyOTQzM2Y5NTRiYjUyZjYiLCJtZXRhZGF0YSI6eyJtb2RlbCI6InNsaW0ifX19fQo=")
+            else -> Pair("0af8df1f-098c-3b72-ac6b-65d65fd0b668", "ewogICJ0aW1lc3RhbXAiIDogMTYzNTk1NzQ4ODQxNywKICAicHJvZmlsZUlkIiA6ICJmNThkZWJkNTlmNTA0MjIyOGY2MDIyMjExZDRjMTQwYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJ1bnZlbnRpdmV0YWxlbnQiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2I5NTFmZWQ2YTdiMmNiYzIwMzY5MTZkZWM3YTQ2YzRhNTY0ODE1NjRkMTRmOTQ1YjZlYmMwMzM4Mjc2NmQzYiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9")
+        }
+        val skull = createSkull("§6${amount.addSeparators()} Coins", uuid, texture)
+        val extraAttributes = skull.extraAttributes
+        extraAttributes.setString("id", "SKYBLOCK_COIN")
+        skull.tagCompound.setTag("ExtraAttributes", extraAttributes)
+        return skull
     }
 
     fun ItemStack.getItemRarityOrCommon() = getItemRarityOrNull() ?: LorenzRarity.COMMON
@@ -297,6 +338,27 @@ object ItemUtils {
         set(value) {
             setStackDisplayName(value)
         }
+
+    fun ItemStack.editItemInfo(displayName: String, disableNeuTooltips: Boolean, lore: List<String>): ItemStack {
+        val tag = this.tagCompound ?: NBTTagCompound()
+        val display = tag.getCompoundTag("display")
+        val loreList = NBTTagList()
+        for (line in lore) {
+            loreList.appendTag(NBTTagString(line))
+        }
+
+        display.setString("Name", displayName)
+        display.setTag("Lore", loreList)
+
+        tag.setTag("display", display)
+        tag.setInteger("HideFlags", 254)
+        if (disableNeuTooltips) {
+            tag.setBoolean("disableNeuTooltip", true)
+        }
+
+        this.tagCompound = tag
+        return this
+    }
 
     fun isSkyBlockMenuItem(stack: ItemStack?): Boolean = stack?.getInternalName()?.equals("SKYBLOCK_MENU") ?: false
 
@@ -441,6 +503,7 @@ object ItemUtils {
         return list
     }
 
+    // todo neuneu
     fun neededItems(recipe: NeuRecipe): Map<NEUInternalName, Int> {
         val neededItems = mutableMapOf<NEUInternalName, Int>()
         for (ingredient in recipe.ingredients) {
@@ -451,6 +514,7 @@ object ItemUtils {
         return neededItems
     }
 
+    // todo neuneu
     fun NeuRecipe.getRecipePrice(
         priceSource: ItemPriceSource = ItemPriceSource.BAZAAR_INSTANT_BUY,
         pastRecipes: List<NeuRecipe> = emptyList(),
@@ -482,6 +546,7 @@ object ItemUtils {
 
     // Running NEU's function `Utils.showOutdatedRepoNotification()` caused a NoSuchMethodError in dev env.
     // Therefore we run NotificationHandler.displayNotification directly
+    // todo neuneu
     private fun showRepoWarning() {
         NotificationHandler.displayNotification(
             Lists.newArrayList(

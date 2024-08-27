@@ -5,7 +5,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.RenderUtils
 import at.hannibal2.skyhanni.utils.renderables.RenderableUtils.renderXAligned
-import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
@@ -44,8 +43,8 @@ object RenderableTooltips {
         val tips = tooltip.tips
         if (tips.isEmpty()) return
 
-        val x = Utils.getMouseX() + 12
-        val y = Utils.getMouseY() - if (tips.size > 1) 2 else -7
+        val x = RenderUtils.getMouseX() + 12
+        val y = RenderUtils.getMouseY() - if (tips.size > 1) 2 else -7
         val borderColorStart = Color(tooltip.getBorderColor()).darker().rgb and 0x00FFFFFF or (200 shl 24)
         val scaled = ScaledResolution(Minecraft.getMinecraft())
 
@@ -115,7 +114,7 @@ object RenderableTooltips {
             right = -3 + 1,
             bottom = tooltipHeight + 3 - 1,
             startColor = borderColorStart,
-            endColor = borderColorEnd
+            endColor = borderColorEnd,
         )
         RenderUtils.drawGradientRect(
             left = tooltipTextWidth + 2,
@@ -123,7 +122,7 @@ object RenderableTooltips {
             right = tooltipTextWidth + 3,
             bottom = tooltipHeight + 3 - 1,
             startColor = borderColorStart,
-            endColor = borderColorEnd
+            endColor = borderColorEnd,
         )
         RenderUtils.drawGradientRect(
             left = -3,
@@ -131,7 +130,7 @@ object RenderableTooltips {
             right = tooltipTextWidth + 3,
             bottom = -3 + 1,
             startColor = borderColorStart,
-            endColor = borderColorStart
+            endColor = borderColorStart,
         )
         RenderUtils.drawGradientRect(
             left = -3,
@@ -139,7 +138,7 @@ object RenderableTooltips {
             right = tooltipTextWidth + 3,
             bottom = tooltipHeight + 3,
             startColor = borderColorEnd,
-            endColor = borderColorEnd
+            endColor = borderColorEnd,
         )
         GlStateManager.disableDepth()
         GlStateManager.translate(0f, 0f, -zLevel)
@@ -170,7 +169,7 @@ private data class DeferredTooltip(
 
     fun getBorderColor(): Int {
         return Minecraft.getMinecraft().fontRendererObj.getColorCode(
-            borderColor?.chatColorCode ?: stack?.getLore()?.lastOrNull()?.take(4)?.get(1) ?: 'f'
+            borderColor?.chatColorCode ?: stack?.getLore()?.lastOrNull()?.take(4)?.get(1) ?: 'f',
         )
     }
 }

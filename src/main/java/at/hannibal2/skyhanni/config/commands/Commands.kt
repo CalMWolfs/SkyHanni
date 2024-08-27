@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.config.commands
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.SkillAPI
+import at.hannibal2.skyhanni.api.enoughupdates.EnoughUpdatesManager
 import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.config.ConfigGuiManager
 import at.hannibal2.skyhanni.config.features.About.UpdateStream
@@ -93,6 +94,7 @@ import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.chat.ChatClickActionManager
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPatternGui
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import net.minecraft.command.ICommandSender
 import net.minecraft.util.BlockPos
 import net.minecraftforge.client.ClientCommandHandler
@@ -574,6 +576,10 @@ object Commands {
             "shresetmineshaftpitystats",
             "Resets the mineshaft pity display stats",
         ) { MineshaftPityDisplay.fullResetCounter() }
+
+        if (!PlatformUtils.validNeuInstalled) {
+            registerCommand("neureloadrepo", "Reload the NEU repo") { EnoughUpdatesManager.reloadRepo() }
+        }
     }
 
     private fun internalCommands() {

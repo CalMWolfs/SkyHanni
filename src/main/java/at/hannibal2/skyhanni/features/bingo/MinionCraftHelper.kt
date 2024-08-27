@@ -169,6 +169,7 @@ object MinionCraftHelper {
 
             if (internalName.contains("_GENERATOR_")) {
                 for (recipe in NEUItems.getRecipes(internalName)) {
+                    // todo neuneu
                     if (recipe !is CraftingRecipe) continue
 
                     for (ingredient in recipe.getCachedIngredients()) {
@@ -194,6 +195,7 @@ object MinionCraftHelper {
         newDisplay.add(minionName)
         val nextMinionId = minionId.addOneToId()
         for (recipe in NEUItems.getRecipes(nextMinionId)) {
+            // todo neuneu
             if (recipe !is CraftingRecipe) continue
             val output = recipe.output
             val internalItemId = output.internalItemId.asInternalName()

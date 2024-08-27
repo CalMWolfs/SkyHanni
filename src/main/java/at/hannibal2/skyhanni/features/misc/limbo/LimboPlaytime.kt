@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.events.InventoryOpenEvent
 import at.hannibal2.skyhanni.events.LorenzToolTipEvent
 import at.hannibal2.skyhanni.events.render.gui.ReplaceItemEvent
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
+import at.hannibal2.skyhanni.utils.ItemUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
@@ -14,7 +15,6 @@ import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.client.player.inventory.ContainerLocalMenu
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -27,11 +27,11 @@ object LimboPlaytime {
     private val patternGroup = RepoPattern.group("misc.limbo.tooltip")
     private val minutesPattern by patternGroup.pattern(
         "minutes",
-        "§5§o§a([\\d.,]+) minutes.+\$"
+        "§5§o§a([\\d.,]+) minutes.+\$",
     )
     private val hoursPattern by patternGroup.pattern(
         "hours",
-        "§5§o§b([\\d.,]+) hours.+\$"
+        "§5§o§b([\\d.,]+) hours.+\$",
     )
 
     var tooltipPlaytime = mutableListOf<String>()
@@ -58,10 +58,10 @@ object LimboPlaytime {
 
         if (lastCreateCooldown.passedSince() > 3.seconds) {
             lastCreateCooldown = SimpleTimeMark.now()
-            limboItem = Utils.createItemStack(
+            limboItem = ItemUtils.createItemStack(
                 itemID.getItemStack().item,
                 itemName,
-                *createItemLore()
+                *createItemLore(),
             )
         }
         event.replace(limboItem)
@@ -70,7 +70,7 @@ object LimboPlaytime {
     private fun createItemLore(): Array<String> = when {
         wholeMinutes >= 60 -> arrayOf(
             "§7Playtime: §a${wholeMinutes.addSeparators()} minutes",
-            "§7Or: §b$hoursString hours"
+            "§7Or: §b$hoursString hours",
         )
 
         wholeMinutes == 1 -> arrayOf("§7Playtime: §a$wholeMinutes minute")

@@ -20,6 +20,7 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.zipWithNext3
 import at.hannibal2.skyhanni.utils.ColorUtils.getFirstColorCode
 import at.hannibal2.skyhanni.utils.LorenzColor.Companion.toLorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils.getCorners
+import at.hannibal2.skyhanni.utils.compat.GuiScreenUtils
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.renderables.RenderableUtils.renderXAligned
 import at.hannibal2.skyhanni.utils.renderables.RenderableUtils.renderYAligned
@@ -42,6 +43,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.MathHelper
 import net.minecraft.util.ResourceLocation
+import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 import java.nio.FloatBuffer
@@ -94,6 +96,15 @@ object RenderUtils {
 
     infix fun RenderGuiItemOverlayEvent.highlight(color: Color) {
         highlight(color, x, y)
+    }
+
+    fun getMouseX(): Int {
+        return Mouse.getX() * GuiScreenUtils.scaledWindowWidth / Minecraft.getMinecraft().displayWidth
+    }
+
+    fun getMouseY(): Int {
+        val height = GuiScreenUtils.scaledWindowHeight
+        return height - Mouse.getY() * height / Minecraft.getMinecraft().displayHeight - 1
     }
 
     fun highlight(color: Color, x: Int, y: Int) {
@@ -505,8 +516,8 @@ object RenderUtils {
     fun Position.transform(): Pair<Int, Int> {
         GlStateManager.translate(getAbsX().toFloat(), getAbsY().toFloat(), 0F)
         GlStateManager.scale(effectiveScale, effectiveScale, 1F)
-        val x = ((Utils.getMouseX() - getAbsX()) / effectiveScale).toInt()
-        val y = ((Utils.getMouseY() - getAbsY()) / effectiveScale).toInt()
+        val x = ((getMouseX() - getAbsX()) / effectiveScale).toInt()
+        val y = ((getMouseY() - getAbsY()) / effectiveScale).toInt()
         return x to y
     }
 
@@ -1739,6 +1750,7 @@ object RenderUtils {
     fun drawRoundTexturedRect(x: Int, y: Int, width: Int, height: Int, filter: Int, radius: Int = 10, smoothness: Int = 1) {
         // if radius is 0 then just draw a normal textured rect
         if (radius <= 0) {
+            // todo neuneu
             Utils.drawTexturedRect(x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat(), filter)
             return
         }
@@ -1758,6 +1770,7 @@ object RenderUtils {
         GlStateManager.pushMatrix()
         ShaderManager.enableShader(ShaderManager.Shaders.ROUNDED_TEXTURE)
 
+        // todo neuneu
         Utils.drawTexturedRect(x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat(), filter)
 
         ShaderManager.disableShader()
@@ -1901,6 +1914,7 @@ object RenderUtils {
     // TODO move off of neu function
     fun drawTexturedRect(x: Float, y: Float) {
         with(ScaledResolution(Minecraft.getMinecraft())) {
+            // todo neuneu
             Utils.drawTexturedRect(x, y, scaledWidth.toFloat(), scaledHeight.toFloat(), GL11.GL_NEAREST)
         }
     }

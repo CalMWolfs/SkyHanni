@@ -16,12 +16,12 @@ import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
 import at.hannibal2.skyhanni.utils.ConditionalUtils
+import at.hannibal2.skyhanni.utils.ItemUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.ParkourHelper
-import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.client.player.inventory.ContainerLocalMenu
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -37,14 +37,14 @@ object DeepCavernsGuide {
 
     private val startIcon by lazy {
         val neuItem = "MAP".asInternalName().getItemStack()
-        Utils.createItemStack(
+        ItemUtils.createItemStack(
             neuItem.item,
             "§bDeep Caverns Guide",
             "§8(From SkyHanni)",
             "",
             "§7Manually enable the ",
             "§7guide to the bottom",
-            "§7of the Deep Caverns."
+            "§7of the Deep Caverns.",
         )
     }
 
@@ -65,7 +65,7 @@ object DeepCavernsGuide {
             depth = false,
             onEndReach = {
                 show = false
-            }
+            },
         )
         updateConfig()
     }
@@ -113,7 +113,7 @@ object DeepCavernsGuide {
                     SkyHanniMod.repo.updateRepo()
                 },
                 "§eClick to update the repo!",
-                prefixColor = "§c"
+                prefixColor = "§c",
             )
         }
     }

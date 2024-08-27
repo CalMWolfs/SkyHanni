@@ -245,6 +245,7 @@ object GardenVisitorFeatures {
 
         val ingredients = NEUItems.getRecipes(internalName)
             // TODO describe what this line does
+            // todo neuneu
             .firstOrNull() { !it.allIngredients().first().internalItemId.contains("PEST") }
             ?.allIngredients() ?: emptySet()
         if (ingredients.isEmpty()) return

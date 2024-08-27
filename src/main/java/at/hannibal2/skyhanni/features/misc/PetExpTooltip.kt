@@ -17,6 +17,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil.shortFormat
 import at.hannibal2.skyhanni.utils.ReflectionUtils.makeAccessible
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getPetExp
 import at.hannibal2.skyhanni.utils.StringUtils
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -54,7 +55,7 @@ object PetExpTooltip {
                 val addLegendaryColor = if (isBelowLegendary) "§6" else ""
                 event.toolTip.add(
                     index,
-                    "$progressBar §e${petExperience.addSeparators()}§6/§e${maxXp.shortFormat()}"
+                    "$progressBar §e${petExperience.addSeparators()}§6/§e${maxXp.shortFormat()}",
                 )
                 event.toolTip.add(index, "§7Progress to ${addLegendaryColor}Level $maxLevel: §e$percentageFormat")
             }
@@ -87,7 +88,8 @@ object PetExpTooltip {
         return null
     }
 
-    private val isNeuExtendedExpEnabled get() = fieldPetExtendExp.get(objectNeuTooltipTweaks) as Boolean
+    // todo neuneu check can compile when neu back
+    private val isNeuExtendedExpEnabled get() = PlatformUtils.validNeuInstalled && (fieldPetExtendExp.get(objectNeuTooltipTweaks) as Boolean)
 
     private val objectNeuTooltipTweaks by lazy {
         val field = NotEnoughUpdates.INSTANCE.config.javaClass.getDeclaredField("tooltipTweaks")
@@ -121,7 +123,7 @@ object PetExpTooltip {
         event.move(
             3,
             "misc.petExperienceToolTip.showGoldenDragonEgg",
-            "misc.pets.petExperienceToolTip.showGoldenDragonEgg"
+            "misc.pets.petExperienceToolTip.showGoldenDragonEgg",
         )
     }
 }

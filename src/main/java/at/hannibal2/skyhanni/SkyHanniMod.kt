@@ -19,7 +19,7 @@ import at.hannibal2.skyhanni.skyhannimodule.LoadedModules
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.test.hotswap.HotswapSupport
 import at.hannibal2.skyhanni.utils.MinecraftConsoleFilter.Companion.initLogging
-import at.hannibal2.skyhanni.utils.NEUVersionCheck.checkIfNeuIsLoaded
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -48,7 +48,7 @@ class SkyHanniMod {
 
     @Mod.EventHandler
     fun preInit(event: FMLPreInitializationEvent?) {
-        checkIfNeuIsLoaded()
+        PlatformUtils.checkIfNeuIsLoaded()
 
         HotswapSupport.load()
 

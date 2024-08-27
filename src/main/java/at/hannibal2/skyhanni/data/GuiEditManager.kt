@@ -15,6 +15,7 @@ import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.ReflectionUtils.getPropertiesWithType
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.TimeLimitedCache
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import io.github.moulberry.notenoughupdates.itemeditor.GuiElementTextField
 import io.github.moulberry.notenoughupdates.profileviewer.GuiProfileViewer
 import net.minecraft.client.Minecraft
@@ -51,7 +52,7 @@ object GuiEditManager {
         if (isInGui()) return
 
         Minecraft.getMinecraft().currentScreen?.let {
-            if (it !is GuiInventory && it !is GuiChest && it !is GuiEditSign && !(it is GuiProfileViewer && !it.anyTextBoxFocused())) return
+            if (it !is GuiInventory && it !is GuiChest && it !is GuiEditSign && (PlatformUtils.validNeuInstalled && !(it is GuiProfileViewer && !it.anyTextBoxFocused()))) return
             if (it is GuiEditSign && !it.isRancherSign()) return
         }
 

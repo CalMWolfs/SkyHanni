@@ -271,6 +271,7 @@ object GuiRenderUtils {
             GlStateManager.color(color.darker().red / 255f, color.darker().green / 255f, color.darker().blue / 255f, 1f)
         }
 
+        // todo neuneu
         Utils.drawTexturedRect(x, y, w_2.toFloat(), height, 0f, w_2 / xSize, vMinEmpty, vMaxEmpty, GL11.GL_NEAREST)
         Utils.drawTexturedRect(
             x + w_2, y, w_2.toFloat(), height, 1 - w_2 / xSize, 1f, vMinEmpty, vMaxEmpty, GL11.GL_NEAREST
@@ -285,6 +286,7 @@ object GuiRenderUtils {
         if (k > 0) {
             val uMax = w_2.toDouble().coerceAtMost(k.toDouble() / xSize).toFloat()
             val width = w_2.coerceAtMost(k).toFloat()
+            // todo neuneu
             Utils.drawTexturedRect(x, y, width, height, 0f, uMax, vMinFilled, vMaxFilled, GL11.GL_NEAREST)
             if (completed > 0.5f) {
                 Utils.drawTexturedRect(
