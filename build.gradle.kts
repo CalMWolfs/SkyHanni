@@ -1,8 +1,4 @@
-import at.skyhanni.sharedvariables.MinecraftVersion
-import at.skyhanni.sharedvariables.MultiVersionStage
-import at.skyhanni.sharedvariables.ProjectTarget
-import at.skyhanni.sharedvariables.SHVersionInfo
-import at.skyhanni.sharedvariables.versionString
+import at.skyhanni.sharedvariables.*
 import net.fabricmc.loom.task.RunGameTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -155,16 +151,16 @@ dependencies {
 
     modRuntimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.1.0")
 
-    modCompileOnly("com.github.hannibal002:notenoughupdates:4957f0b:all") {
-        exclude(module = "unspecified")
-        isTransitive = false
-    }
+//     modCompileOnly("com.github.hannibal002:notenoughupdates:4957f0b:all") {
+//         exclude(module = "unspecified")
+//         isTransitive = false
+//     }
     // August 27, 2024, 4:30 PM AEST
     // https://github.com/NotEnoughUpdates/NotEnoughUpdates/tree/2.3.3
-    devenvMod("com.github.NotEnoughUpdates:NotEnoughUpdates:2.3.3:all") {
-        exclude(module = "unspecified")
-        isTransitive = false
-    }
+//     devenvMod("com.github.NotEnoughUpdates:NotEnoughUpdates:2.3.3:all") {
+//         exclude(module = "unspecified")
+//         isTransitive = false
+//     }
 
     shadowModImpl(libs.moulconfig)
     shadowImpl(libs.libautoupdate) {
@@ -173,10 +169,10 @@ dependencies {
     shadowImpl("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
     implementation(libs.hotswapagentforge)
 
-    testImplementation("com.github.NotEnoughUpdates:NotEnoughUpdates:faf22b5dd9:all") {
-        exclude(module = "unspecified")
-        isTransitive = false
-    }
+//     testImplementation("com.github.NotEnoughUpdates:NotEnoughUpdates:faf22b5dd9:all") {
+//         exclude(module = "unspecified")
+//         isTransitive = false
+//     }
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("io.mockk:mockk:1.12.5")
 
