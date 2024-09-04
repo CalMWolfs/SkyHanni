@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
@@ -81,7 +82,9 @@ object InventoryUtils {
             val booleanField = storage.javaClass.getDeclaredField("enableStorageGUI3")
             booleanField.get(storage) as Boolean
         } catch (e: Throwable) {
-            ErrorManager.logErrorWithData(e, "Could not read NEU config to determine if the neu storage is enabled.")
+            if (PlatformUtils.validNeuInstalled) {
+                ErrorManager.logErrorWithData(e, "Could not read NEU config to determine if the neu storage is enabled.")
+            }
             false
         }
     }

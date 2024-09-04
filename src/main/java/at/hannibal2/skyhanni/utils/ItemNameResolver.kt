@@ -45,6 +45,7 @@ object ItemNameResolver {
                         else -> ' '
                     }
                 } ${split.joinToString("_").allLettersFirstUppercase()}"
+                // todo neuneu
                 ItemResolutionQuery.findInternalNameByDisplayName(gemstoneQuery, true)?.let {
                     return itemNameCache.getOrPut(lowercase) { it.asInternalName() }
                 }
@@ -54,6 +55,7 @@ object ItemNameResolver {
         val internalName = when (itemName) {
             "SUPERBOOM TNT" -> "SUPERBOOM_TNT".asInternalName()
             else -> {
+                // todo neuneu
                 ItemResolutionQuery.findInternalNameByDisplayName(itemName, true)?.let {
 
                     // This fixes a NEU bug with §9Hay Bale (cosmetic item)
@@ -73,7 +75,7 @@ object ItemNameResolver {
         UtilsPatterns.enchantmentNamePattern.matchMatcher(enchantmentName) {
             val name = group("name").trim { it <= ' ' }
             val ultimate = group("format").lowercase().contains("§l")
-                ((if (ultimate && name != "Ultimate Wise" && name != "Ultimate Jerry") "ULTIMATE_" else "")
+            ((if (ultimate && name != "Ultimate Wise" && name != "Ultimate Jerry") "ULTIMATE_" else "")
                 + turboCheck(name).replace(" ", "_").replace("-", "_").uppercase()
                 + ";" + group("level").romanToDecimal())
         }

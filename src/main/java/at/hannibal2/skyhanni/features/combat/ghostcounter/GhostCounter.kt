@@ -55,6 +55,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import io.github.moulberry.notenoughupdates.util.XPInformation
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.apache.commons.io.FilenameUtils
@@ -524,5 +525,6 @@ object GhostCounter {
         }
     }
 
-    fun isEnabled() = IslandType.DWARVEN_MINES.isInIsland() && config.enabled
+    // no neu -> no ghosts until we track skill xp gain in skyhanni itself
+    fun isEnabled() = PlatformUtils.validNeuInstalled && IslandType.DWARVEN_MINES.isInIsland() && config.enabled
 }

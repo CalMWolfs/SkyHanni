@@ -540,6 +540,7 @@ object ItemUtils {
     // Running NEU's function `Utils.showOutdatedRepoNotification()` caused a NoSuchMethodError in dev env.
     // Therefore we run NotificationHandler.displayNotification directly
     private fun showRepoWarning() {
+        // todo neuneu
         NotificationHandler.displayNotification(
             Lists.newArrayList(
                 "§c§lMissing repo data",

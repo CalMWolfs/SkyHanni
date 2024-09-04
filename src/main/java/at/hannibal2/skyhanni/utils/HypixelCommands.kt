@@ -150,6 +150,10 @@ object HypixelCommands {
         send("chatprompt $prompt")
     }
 
+    fun locraw() {
+        send("locraw")
+    }
+
     private fun send(command: String) {
         @Suppress("DEPRECATION")
         // TODO rename function

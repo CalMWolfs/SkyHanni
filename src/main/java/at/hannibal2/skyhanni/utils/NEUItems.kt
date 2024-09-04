@@ -47,6 +47,7 @@ import at.hannibal2.skyhanni.utils.ItemPriceUtils.getPrice as getPriceNew
 import at.hannibal2.skyhanni.utils.ItemPriceUtils.getPriceOrNull as getPriceOrNullNew
 import at.hannibal2.skyhanni.utils.ItemPriceUtils.getRawCraftCostOrNull as getRawCraftCostOrNullNew
 
+// todo neuneu
 @SkyHanniModule
 object NEUItems {
 

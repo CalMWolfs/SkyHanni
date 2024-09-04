@@ -10,6 +10,7 @@ import at.hannibal2.skyhanni.features.inventory.wardrobe.CustomWardrobeKeybinds
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import io.github.moulberry.notenoughupdates.NEUApi
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
@@ -77,7 +78,7 @@ object GuiData {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     fun onGuiOpen(event: GuiOpenEvent) {
-        if (preDrawEventCancelled) {
+        if (preDrawEventCancelled && PlatformUtils.validNeuInstalled) {
             NEUApi.setInventoryButtonsToDisabled()
         }
     }

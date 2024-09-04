@@ -50,6 +50,7 @@ object ItemPriceUtils {
     }
 
     private fun NEUInternalName.getLowestBinOrNull(): Double? {
+        // todo neuneu
         val result = NEUItems.manager.auctionManager.getLowestBin(asString())
         if (result == -1L) return null
         return result.toDouble()
@@ -81,7 +82,6 @@ object ItemPriceUtils {
             return
         }
 
-
         val defaultPrice = internalName.getPrice().addSeparators()
         ChatUtils.chat("${internalName.itemName}§f: §6$defaultPrice")
 
@@ -90,7 +90,7 @@ object ItemPriceUtils {
         println("defaultPrice: $defaultPrice")
 
         println(" #")
-        for (source in ItemPriceSource.values()) {
+        for (source in ItemPriceSource.entries) {
             val price = internalName.getPrice(source)
             println("${source.displayName} price: ${price.addSeparators()}")
         }
