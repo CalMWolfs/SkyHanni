@@ -6,10 +6,18 @@ plugins {
 repositories {
     this.mavenCentral()
     this.mavenLocal()
+    maven("https://jitpack.io") {
+        content {
+            includeGroupByRegex("com\\.github\\..*")
+        }
+    }
 }
+
 dependencies {
     this.implementation("com.google.code.gson:gson:2.10.1")
     this.implementation("com.google.guava:guava:33.2.1-jre")
+
+    this.implementation("com.github.CalMWolfs:SkyHanniChangelogBuilder:1.0.0-test")
 }
 
 sourceSets.main {

@@ -1,0 +1,26 @@
+name: "PR Changelog Verification"
+
+on:
+    pull_request_target:
+        types: [ opened, edited ]
+
+jobs:
+    verify-changelog:
+        if: github.event.pull_request.state == 'open'
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   uses: ./.github/actions/setup-normal-workspace
+
+            -   name: Build project
+                run: ./gradlew build
+
+            -   name: Run ChangeLog verification
+                env:
+                    PR_TITLE: ${{ github.event.pull_request.title }}
+                    PR_BODY: ${{ github.event.pull_request.body }}
+                run: |
+                    ./gradlew checkPrDescription -PprTitle="${PR_TITLE}" -PprBody="${PR_BODY}"
