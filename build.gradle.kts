@@ -370,6 +370,10 @@ tasks.withType<Detekt>().configureEach {
         val shouldSkipDetekt = project.hasProperty("SKIP_DETEKT") && project.property("SKIP_DETEKT") == "true"
         val propertyValue = project.findProperty("SKIP_DETEKT")
         println("Detekt is being skipped: $shouldSkipDetekt and property value is $propertyValue")
+        val envVars = System.getenv()
+        for ((key, value) in envVars) {
+            println("$key: $value")
+        }
         !shouldSkipDetekt
     }
 
