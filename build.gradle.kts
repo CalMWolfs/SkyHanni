@@ -367,7 +367,9 @@ detekt {
 
 tasks.withType<Detekt>().configureEach {
     onlyIf {
-        !project.hasProperty("skipDetekt") || project.property("skipDetekt") != "true"
+        val shouldSkipDetekt = project.hasProperty("SKIP_DETEKT") && project.property("SKIP_DETEKT") == "true"
+        println("Detekt is being skipped: $shouldSkipDetekt")
+        !shouldSkipDetekt
     }
 
     reports {
