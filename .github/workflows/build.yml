@@ -59,7 +59,7 @@ jobs:
         runs-on: ubuntu-latest
         name: "Build multi version"
         env:
-            SKIP_DETEKT: "true"
+            SKIP_DETEKT: True
 
         steps:
             -   name: Checkout code
