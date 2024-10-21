@@ -12,9 +12,9 @@ if [ ! -f "$SARIF_FILE" ]; then
 fi
 
 # Print the raw SARIF file content for debugging
-echo "==== RAW SARIF FILE CONTENT ===="
-cat "$SARIF_FILE"
-echo "==============================="
+#echo "==== RAW SARIF FILE CONTENT ===="
+#cat "$SARIF_FILE"
+#echo "==============================="
 
 # Define jq command to parse SARIF file
 read -r -d '' jq_command <<'EOF'
