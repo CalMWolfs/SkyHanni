@@ -28,7 +28,7 @@ read -r -d '' jq_command <<'EOF'
     "ruleId": .ruleId
 } |
 (
-    "::" + (.level) +
+    ":no:" + (.level) +
     " file=" + (.full_path) +
     ",line=" + (.l.region.startLine|tostring) +
     ",title=" + (.ruleId) +
