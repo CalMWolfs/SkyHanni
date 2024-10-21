@@ -81,6 +81,8 @@ object ProfileStorageData {
         noTabListTime = if (event.isClear()) SimpleTimeMark.now() else SimpleTimeMark.farPast()
     }
 
+    val ignore = "colour"
+
     @SubscribeEvent
     fun onTick(event: LorenzTickEvent) {
         if (!LorenzUtils.inSkyBlock) return

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This script processes the Detekt SARIF file and outputs results in a format
-# suitable for annotation in CI/CD systems.
+# suitable for annotation in CI/CD systems, with debug output.
 
 SARIF_FILE="$1"
 
@@ -10,6 +10,11 @@ if [ ! -f "$SARIF_FILE" ]; then
     echo "SARIF file not found: $SARIF_FILE"
     exit 1
 fi
+
+# Print the raw SARIF file content for debugging
+echo "==== RAW SARIF FILE CONTENT ===="
+cat "$SARIF_FILE"
+echo "==============================="
 
 # Define jq command to parse SARIF file
 read -r -d '' jq_command <<'EOF'
@@ -33,5 +38,7 @@ read -r -d '' jq_command <<'EOF'
 )
 EOF
 
-# Run jq command to format the output
+# Run jq command to format the output, and print debug info of parsed SARIF data
+echo "==== FORMATTED OUTPUT FROM JQ ===="
 jq -r "$jq_command" < "$SARIF_FILE"
+echo "==============================="
