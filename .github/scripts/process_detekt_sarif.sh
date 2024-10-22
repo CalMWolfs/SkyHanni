@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This script processes the Detekt SARIF file and outputs results in a format
-# suitable for annotation in CI/CD systems, with debug output.
+# suitable for annotation in CI/CD systems, with the file paths fixed.
 
 SARIF_FILE="$1"
 
@@ -12,15 +12,16 @@ if [ ! -f "$SARIF_FILE" ]; then
 fi
 
 # Print the raw SARIF file content for debugging
-#echo "==== RAW SARIF FILE CONTENT ===="
-#cat "$SARIF_FILE"
-#echo "==============================="
+echo "==== RAW SARIF FILE CONTENT ===="
+cat "$SARIF_FILE"
+echo "==============================="
 
-# Define jq command to parse SARIF file
+# Define jq command to parse SARIF file and fix the file path
 read -r -d '' jq_command <<'EOF'
 .runs[].results[] |
 {
-    "full_path": .locations[].physicalLocation.artifactLocation.uri | sub("file://$(pwd)/"; ""),
+    # Adjust the path to remove the runner workspace prefix
+    "full_path": (.locations[].physicalLocation.artifactLocation.uri | sub("file://.*/SkyHanni/"; "")),
     "file_name": (.locations[].physicalLocation.artifactLocation.uri | split("/") | last),
     "l": .locations[].physicalLocation,
     "level": .level,
@@ -28,7 +29,7 @@ read -r -d '' jq_command <<'EOF'
     "ruleId": .ruleId
 } |
 (
-    ":no:" + (.level) +
+    "no" + (.level) +
     " file=" + (.full_path) +
     ",line=" + (.l.region.startLine|tostring) +
     ",title=" + (.ruleId) +
@@ -39,6 +40,6 @@ read -r -d '' jq_command <<'EOF'
 EOF
 
 # Run jq command to format the output, and print debug info of parsed SARIF data
-echo "==== FORMATTED OUTPUT FROM JQ ===="
+echo "==== FORMATTED OUTPUT FROM JQ (with fixed paths) ===="
 jq -r "$jq_command" < "$SARIF_FILE"
 echo "==============================="
