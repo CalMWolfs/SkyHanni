@@ -11,11 +11,6 @@ if [ ! -f "$SARIF_FILE" ]; then
     exit 1
 fi
 
-# Print the raw SARIF file content for debugging
-echo "==== RAW SARIF FILE CONTENT ===="
-cat "$SARIF_FILE"
-echo "==============================="
-
 # Define jq command to parse SARIF file and fix the file path
 read -r -d '' jq_command <<'EOF'
 .runs[].results[] |
@@ -29,7 +24,7 @@ read -r -d '' jq_command <<'EOF'
     "ruleId": .ruleId
 } |
 (
-    "no" + (.level) +
+    "::" + (.level) +
     " file=" + (.full_path) +
     ",line=" + (.l.region.startLine|tostring) +
     ",title=" + (.ruleId) +
