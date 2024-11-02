@@ -52,7 +52,7 @@ class SkyHanniMod {
 
         HotswapSupport.load()
 
-        loadModule(this)
+          loadModule(this)
         LoadedModules.modules.forEach { loadModule(it) }
 
         loadModule(CrimsonIsleReputationHelper(this))
