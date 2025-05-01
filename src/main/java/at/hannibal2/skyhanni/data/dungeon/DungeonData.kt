@@ -9,7 +9,6 @@ import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.BlockUtils.getBlockIdAt
 import at.hannibal2.skyhanni.utils.BlockUtils.getBlockMetadataAt
 import at.hannibal2.skyhanni.utils.BlockUtils.isAir
-import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
@@ -33,7 +32,8 @@ object DungeonData {
     // TODO use cache when going back to a known room
     private val roomData = mutableMapOf<DungeonPos, DungeonRoomData>()
 
-    // TODO doors cache
+    private val doors = mutableListOf<DungeonDoor>()
+    private val witherDoors = mutableListOf<DungeonDoor>()
 
     private var topLeftTilePos = DungeonPos()
     private var mapTileCount = DungeonPos()
@@ -85,6 +85,11 @@ object DungeonData {
         // If we already have room data we don't need to update the map
         if (currentDungeonRoom != null || roomId == null) return
         updateMap()
+    }
+
+    private fun setCurrentRoomData(room: DungeonRoomData, cornerPos: DungeonPos) {
+        roomData[cornerPos] = room
+        currentDungeonRoom = room
     }
 
     private fun updateMap() {
@@ -150,9 +155,11 @@ object DungeonData {
                 val location = mapPosFromGridPos(DungeonPos(x, y), DungeonPos(DOOR_SIZE, DOOR_SIZE))
 
                 val color = mapCache[location]
-                if (color != RoomType.UNKNOWN.mapColor && color != RoomType.UNOPENED.mapColor) {
-                    processRoom(DungeonPos(x, y), color)
+                if (color == RoomType.UNKNOWN.mapColor || color == RoomType.UNOPENED.mapColor) {
+                    continue
                 }
+                processRoom(DungeonPos(x, y), color)
+                processRoomDoors(DungeonPos(x, y))
             }
         }
 
@@ -169,9 +176,7 @@ object DungeonData {
                 currentRoom.type,
                 roomId ?: "Unknown",
             )
-            roomData[currentRoom.topLeftPos] = newRoom
-            currentDungeonRoom = newRoom
-            ChatUtils.chat("Early Room: $currentDungeonRoom")
+            setCurrentRoomData(newRoom, currentRoom.topLeftPos)
             return
         }
 
@@ -257,9 +262,7 @@ object DungeonData {
                 room.type,
                 roomId ?: "Unknown",
             )
-            roomData[room.topLeftPos] = newRoom
-            currentDungeonRoom = newRoom
-            ChatUtils.chat("Rot Room: $currentDungeonRoom")
+            setCurrentRoomData(newRoom, room.topLeftPos)
             return
         }
 
@@ -268,6 +271,40 @@ object DungeonData {
             "p1, p2, p3, p4" to "$p1, $p2, $p3, $p4",
             "roomID" to roomId,
         )
+    }
+
+    private fun processRoomDoors(pos: DungeonPos) {
+        // left door
+        if (mapCache[mapPosFromGridPos(pos, DungeonPos(0, DOOR_SIZE))] == RoomType.UNKNOWN.mapColor &&
+            mapCache[mapPosFromGridPos(pos, DungeonPos(0, mapTileSize / 2))] != RoomType.UNKNOWN.mapColor
+        ) {
+            val doorType = RoomType.fromMapColor(mapCache[mapPosFromGridPos(pos, DungeonPos(0, mapTileSize / 2))])
+            updateDoor(pos, doorType, false)
+        }
+
+        // top door
+        if (mapCache[mapPosFromGridPos(pos, DungeonPos(DOOR_SIZE, 0))] == RoomType.UNKNOWN.mapColor &&
+            mapCache[mapPosFromGridPos(pos, DungeonPos(mapTileSize / 2, 0))] != RoomType.UNKNOWN.mapColor
+        ) {
+            val doorType = RoomType.fromMapColor(mapCache[mapPosFromGridPos(pos, DungeonPos(mapTileSize / 2, 0))])
+            updateDoor(pos, doorType, true)
+        }
+    }
+
+    private fun updateDoor(pos: DungeonPos, doorType: RoomType, horizontal: Boolean) {
+        val door = doors.find { it.pos == pos && it.horizontal == horizontal }
+        if (door == null) {
+            val newDoor = DungeonDoor(doorType, pos, horizontal)
+            doors.add(newDoor)
+            if (doorType == RoomType.WITHER || RoomType.BLOOD == doorType) {
+                witherDoors.add(newDoor)
+            }
+        } else if (doorType != door.type) {
+            if (door in witherDoors) {
+                witherDoors.remove(door)
+            }
+            door.type = doorType
+        }
     }
 
     private fun LorenzVec.isCorrectBlock(): Boolean {
@@ -297,6 +334,8 @@ object DungeonData {
 
         dungeonRooms.clear()
         roomData.clear()
+        doors.clear()
+        witherDoors.clear()
     }
 
     private fun mapPosFromGridPos(gridPos: DungeonPos, offset: DungeonPos = DungeonPos(0, 0)): DungeonPos {

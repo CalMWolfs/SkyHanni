@@ -1,7 +1,5 @@
 package at.hannibal2.skyhanni.data.dungeon
 
-import at.hannibal2.skyhanni.utils.ChatUtils
-
 data class DungeonRoom(val components: MutableList<DungeonPos>, var type: RoomType) {
 
     private val xComps: Set<Int>
@@ -16,7 +14,7 @@ data class DungeonRoom(val components: MutableList<DungeonPos>, var type: RoomTy
     val height: Int
         get() = yComps.size * DungeonData.ROOM_SIZE - DungeonData.DOOR_SIZE
 
-    val topLeftPos = DungeonPos(
+    val topLeftPos get() = DungeonPos(
         components.minOf { it.x },
         components.minOf { it.y }
     )
@@ -34,7 +32,6 @@ data class DungeonRoom(val components: MutableList<DungeonPos>, var type: RoomTy
                 if (size == 4) return RoomShape.ONE_FOUR
             }
 
-            println("Is L-Shape")
             return RoomShape.L_SHAPE
         }
 
@@ -43,10 +40,10 @@ data class DungeonRoom(val components: MutableList<DungeonPos>, var type: RoomTy
      */
     val rotation: RoomRotation?
         get() {
-            if (type == RoomType.FAIRY) return RoomRotation.EAST
+            if (type == RoomType.FAIRY) return RoomRotation.NORTH
             val shape = this.shape
             if (shape == RoomShape.ONE_ONE) return null
-            if (shape == RoomShape.TWO_TWO) return RoomRotation.EAST
+            if (shape == RoomShape.TWO_TWO) return RoomRotation.NORTH
 
             if (shape in listOf(RoomShape.ONE_TWO, RoomShape.ONE_THREE, RoomShape.ONE_FOUR)) {
                 if (xComps.size == 1) return RoomRotation.EAST
@@ -70,10 +67,6 @@ data class DungeonRoom(val components: MutableList<DungeonPos>, var type: RoomTy
             if (intersectionX == maxX && intersectionY == maxY) return RoomRotation.EAST
             if (intersectionX == maxX && intersectionY == minY) return RoomRotation.SOUTH
             if (intersectionX == minX && intersectionY == minY) return RoomRotation.WEST
-            ChatUtils.chat("Unknown room rotation: $this")
-            println("Unknown room rotation: $this")
-            println("Intersection: $intersection")
-            println("minX: $minX, minY: $minY, maxX: $maxX, maxY: $maxY")
 
             return null
         }
@@ -96,6 +89,7 @@ enum class RoomType(val mapColor: Int) {
     FAIRY(82),
     TRAP(62),
     BLOOD(62),
+    WITHER(119),
     UNOPENED(85),
     UNKNOWN(0);
 
@@ -106,3 +100,4 @@ enum class RoomType(val mapColor: Int) {
     }
 }
 
+data class DungeonDoor(var type: RoomType, val pos: DungeonPos, val horizontal: Boolean)
