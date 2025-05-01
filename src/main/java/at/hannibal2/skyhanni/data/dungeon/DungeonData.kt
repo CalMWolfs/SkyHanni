@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.data.dungeon
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonApi
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
@@ -29,6 +30,11 @@ object DungeonData {
     private var mapCache = MapColorArray.empty()
     private val dungeonRooms = mutableMapOf<DungeonPos, DungeonRoom>()
 
+    // TODO use cache when going back to a known room
+    private val roomData = mutableMapOf<DungeonPos, DungeonRoomData>()
+
+    // TODO doors cache
+
     private var topLeftTilePos = DungeonPos()
     private var mapTileCount = DungeonPos()
 
@@ -41,9 +47,12 @@ object DungeonData {
     private val mapTileSize: Int
         get() = (tileSize ?: 0) + DOOR_SIZE * 2
 
-    @HandleEvent
+    private val currentRoom
+        get() =
+            dungeonRooms[gridPosFromMapPos(mapPosFromWorldPos(LocationUtils.playerLocation().toRoomTopCorner()))]
+
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
-        if (!DungeonApi.inDungeon()) return
         DungeonApi.dungeonRoomPattern.firstMatcher(event.added) {
             val detectedId = group("roomId")
             if (roomId != detectedId) {
@@ -53,10 +62,8 @@ object DungeonData {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onTick() {
-        if (!DungeonApi.inDungeon()) return
-
         val mapStack = InventoryUtils.getItemsInOwnInventoryWithNull()?.get(8) ?: return
         val mapItem = mapStack.item
         if (mapItem !is ItemMap) return
@@ -152,7 +159,7 @@ object DungeonData {
         val currentRoom = currentRoom ?: return
         currentRoom.rotation?.let { rotation ->
             val cornerPos = worldPosFromMapPos(mapPosFromGridPos(currentRoom.topLeftPos))
-            currentDungeonRoom = DungeonRoomData(
+            val newRoom = DungeonRoomData(
                 cornerPos.x,
                 cornerPos.y,
                 currentRoom.width,
@@ -162,6 +169,8 @@ object DungeonData {
                 currentRoom.type,
                 roomId ?: "Unknown",
             )
+            roomData[currentRoom.topLeftPos] = newRoom
+            currentDungeonRoom = newRoom
             ChatUtils.chat("Early Room: $currentDungeonRoom")
             return
         }
@@ -238,7 +247,7 @@ object DungeonData {
         }
 
         rotation?.let {
-            currentDungeonRoom = DungeonRoomData(
+            val newRoom = DungeonRoomData(
                 cornerPos.x,
                 cornerPos.y,
                 room.width,
@@ -248,6 +257,8 @@ object DungeonData {
                 room.type,
                 roomId ?: "Unknown",
             )
+            roomData[room.topLeftPos] = newRoom
+            currentDungeonRoom = newRoom
             ChatUtils.chat("Rot Room: $currentDungeonRoom")
             return
         }
@@ -285,11 +296,8 @@ object DungeonData {
         mapTileCount = DungeonPos()
 
         dungeonRooms.clear()
+        roomData.clear()
     }
-
-    private val currentRoom
-        get() =
-            dungeonRooms[gridPosFromMapPos(mapPosFromWorldPos(LocationUtils.playerLocation().toRoomTopCorner()))]
 
     private fun mapPosFromGridPos(gridPos: DungeonPos, offset: DungeonPos = DungeonPos(0, 0)): DungeonPos {
         val x = gridPos.x * mapTileSize + topLeftTilePos.x + offset.x
