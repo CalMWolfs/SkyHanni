@@ -17,6 +17,12 @@ object BlockUtils {
 
     fun LorenzVec.getBlockStateAt(): IBlockState = world.getBlockState(toBlockPos())
 
+    fun LorenzVec.getBlockIdAt(): Int = Block.getIdFromBlock(getBlockAt())
+
+    fun LorenzVec.getBlockMetadataAt(): Int = getBlockStateAt().block.getMetaFromState(getBlockStateAt())
+
+    fun LorenzVec.isAir(): Boolean = getBlockIdAt() == 0
+
     //#if MC < 1.21
     fun LorenzVec.isInLoadedChunk(): Boolean = world.isBlockLoaded(toBlockPos(), false)
     //#else
