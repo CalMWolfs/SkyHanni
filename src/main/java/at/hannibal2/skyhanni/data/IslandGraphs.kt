@@ -15,6 +15,7 @@ import at.hannibal2.skyhanni.events.entity.EntityMoveEvent
 import at.hannibal2.skyhanni.events.minecraft.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.minecraft.SkyHanniTickEvent
 import at.hannibal2.skyhanni.events.skyblock.ScoreboardAreaChangeEvent
+import at.hannibal2.skyhanni.features.dungeon.DungeonApi
 import at.hannibal2.skyhanni.features.misc.IslandAreas
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
@@ -270,7 +271,11 @@ object IslandGraphs {
 
         val graph = RepoUtils.getConstant(RepoManager.repoLocation, constant, Graph.gson, Graph::class.java)
         IslandAreas.display = null
-        setNewGraph(graph)
+        if (DungeonApi.inDungeon()) {
+//             setNewGraph(graph.translateToDungeon())
+        } else {
+            setNewGraph(graph)
+        }
     }
 
     fun setNewGraph(graph: Graph) {

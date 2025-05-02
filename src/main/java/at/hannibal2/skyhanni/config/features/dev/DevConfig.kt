@@ -145,6 +145,15 @@ class DevConfig {
 
     @Expose
     @ConfigOption(
+        name = "Dungeon Room Detection",
+        desc = "Provides data for §e/shnavigate §7support in dungeon. " +
+            "§cDoesn't work if you are ironman in a full party!",
+    )
+    @ConfigEditorBoolean
+    var dungeonRoomDetection: Boolean = true
+
+    @Expose
+    @ConfigOption(
         name = "NTP Server",
         desc = "Change the NTP-Server Address. Default is \"time.google.com\".\n§cONLY CHANGE THIS IF YOU KNOW WHAT YOU'RE DOING!"
     )

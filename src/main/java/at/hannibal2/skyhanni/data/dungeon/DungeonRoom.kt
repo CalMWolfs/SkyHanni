@@ -46,8 +46,8 @@ data class DungeonRoom(val components: MutableList<DungeonPos>, var type: RoomTy
             if (shape == RoomShape.TWO_TWO) return RoomRotation.NORTH
 
             if (shape in listOf(RoomShape.ONE_TWO, RoomShape.ONE_THREE, RoomShape.ONE_FOUR)) {
-                if (xComps.size == 1) return RoomRotation.EAST
-                if (yComps.size == 1) return RoomRotation.NORTH
+                if (xComps.size == 1) return RoomRotation.NORTH
+                if (yComps.size == 1) return RoomRotation.EAST
             }
 
             // L-Shape
@@ -101,3 +101,10 @@ enum class RoomType(val mapColor: Int) {
 }
 
 data class DungeonDoor(var type: RoomType, val pos: DungeonPos, val horizontal: Boolean)
+
+enum class RoomRotation {
+    NORTH,
+    EAST,
+    SOUTH,
+    WEST,
+}

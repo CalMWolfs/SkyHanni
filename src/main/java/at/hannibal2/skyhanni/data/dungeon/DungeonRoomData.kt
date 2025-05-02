@@ -12,28 +12,30 @@ data class DungeonRoomData(
     val type: RoomType,
     val roomId: String,
 ) {
+
+    /**
+     * For when converting a position relative to the room into a saved position (saving room)
+     */
     fun relativeToActual(pos: LorenzVec): LorenzVec {
+        val (unOffsetX, unOffsetZ) = pos.x - x to pos.z - z
         return when (rotation) {
-            RoomRotation.NORTH -> LorenzVec(pos.x + x, pos.y, pos.z + z)
-            RoomRotation.EAST -> LorenzVec(-(pos.z - x), pos.y, pos.x + z)
-            RoomRotation.SOUTH -> LorenzVec(-(pos.x - x), pos.y, -(pos.z - z))
-            RoomRotation.WEST -> LorenzVec(pos.z + x, pos.y, -(pos.x - z))
+            RoomRotation.NORTH -> LorenzVec(unOffsetX, pos.y, unOffsetZ)
+            RoomRotation.EAST -> LorenzVec(unOffsetZ, pos.y, -unOffsetX + width + DungeonData.DOOR_SIZE)
+            RoomRotation.SOUTH -> LorenzVec(-unOffsetX + width + DungeonData.DOOR_SIZE, pos.y, -unOffsetZ + height + DungeonData.DOOR_SIZE)
+            RoomRotation.WEST -> LorenzVec(-unOffsetZ + height + DungeonData.DOOR_SIZE, pos.y, unOffsetX)
         }
     }
 
+    /**
+     * For when converting the saved position into a position relative to the room (loading room)
+     */
     fun actualToRelative(pos: LorenzVec): LorenzVec {
-        return when (rotation) {
-            RoomRotation.NORTH -> LorenzVec(pos.x - x, pos.y, pos.z - z)
-            RoomRotation.EAST -> LorenzVec(pos.z - z, pos.y, -(pos.x - x))
-            RoomRotation.SOUTH -> LorenzVec(-(pos.x - x), pos.y, -(pos.z - z))
-            RoomRotation.WEST -> LorenzVec(-(pos.z - z), pos.y, pos.x - x)
+        val (offsetX, offsetZ) = when (rotation) {
+            RoomRotation.NORTH -> pos.x to pos.z
+            RoomRotation.EAST -> -pos.z + height + DungeonData.DOOR_SIZE to pos.x
+            RoomRotation.SOUTH -> -pos.x + width + DungeonData.DOOR_SIZE to -pos.z + height + DungeonData.DOOR_SIZE
+            RoomRotation.WEST -> pos.z to -pos.x + width + DungeonData.DOOR_SIZE
         }
+        return LorenzVec(offsetX + x, pos.y, offsetZ + z)
     }
-}
-
-enum class RoomRotation {
-    NORTH,
-    EAST,
-    SOUTH,
-    WEST,
 }

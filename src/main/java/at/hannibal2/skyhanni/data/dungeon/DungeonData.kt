@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.data.dungeon
 
+import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.ScoreboardUpdateEvent
@@ -20,6 +21,7 @@ import kotlin.math.floor
 // TODO add isEnabled check
 @SkyHanniModule
 object DungeonData {
+    private val config get() = SkyHanniMod.feature.dev
 
     const val ROOM_SIZE = 32
     const val DOOR_SIZE = 2
@@ -40,7 +42,8 @@ object DungeonData {
 
     private var tileSize: Int? = null
     private var roomId: String? = null
-    private var currentDungeonRoom: DungeonRoomData? = null
+    var currentDungeonRoom: DungeonRoomData? = null
+        private set
 
     private var scaleFactor = 0.0
 
@@ -64,6 +67,8 @@ object DungeonData {
 
     @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onTick() {
+        if (!isEnabled()) return
+
         val mapStack = InventoryUtils.getItemsInOwnInventoryWithNull()?.get(8) ?: return
         val mapItem = mapStack.item
         if (mapItem !is ItemMap) return
@@ -367,4 +372,6 @@ object DungeonData {
         val y = floor((z + 8) / 32).toInt() * 32 - 8
         return DungeonPos(x, y)
     }
+
+    private fun isEnabled() = DungeonApi.inDungeon() && !DungeonApi.inBossRoom && config.dungeonRoomDetection
 }
