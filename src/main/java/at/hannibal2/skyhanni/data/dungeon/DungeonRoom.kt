@@ -14,10 +14,8 @@ data class DungeonRoom(val components: MutableList<DungeonPos>, var type: RoomTy
     val height: Int
         get() = yComps.size * DungeonData.ROOM_SIZE - DungeonData.DOOR_SIZE
 
-    val topLeftPos get() = DungeonPos(
-        components.minOf { it.x },
-        components.minOf { it.y }
-    )
+    val topLeftPos
+        get() = DungeonPos(components.minOf { it.x }, components.minOf { it.y })
 
     val shape: RoomShape
         get() {
