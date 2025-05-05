@@ -146,11 +146,10 @@ class DevConfig {
     @Expose
     @ConfigOption(
         name = "Dungeon Room Detection",
-        desc = "Provides data for §e/shnavigate §7support in dungeon. " +
-            "§cDoesn't work if you are ironman in a full party!",
+        desc = "Enables editing dungeon room graphs in the graph editor. §cOnly enable if you know what you are doing!",
     )
     @ConfigEditorBoolean
-    var dungeonRoomDetection: Boolean = true
+    var dungeonRoomDetection: Boolean = false
 
     @Expose
     @ConfigOption(

@@ -12,6 +12,13 @@ data class DungeonRoomData(
     val type: RoomType,
     val roomId: String,
 ) {
+    private val maxDimension = maxOf(width, height)
+
+    private val extraOffset = if (shape.isLongRoom) {
+        maxDimension - 30
+    } else {
+        0
+    }
 
     /**
      * For when converting a position relative to the room into a saved position (saving room)
@@ -20,9 +27,9 @@ data class DungeonRoomData(
         val (unOffsetX, unOffsetZ) = pos.x - x to pos.z - z
         return when (rotation) {
             RoomRotation.NORTH -> LorenzVec(unOffsetX, pos.y, unOffsetZ)
-            RoomRotation.EAST -> LorenzVec(unOffsetZ, pos.y, -unOffsetX + width + DungeonData.DOOR_SIZE)
-            RoomRotation.SOUTH -> LorenzVec(-unOffsetX + width + DungeonData.DOOR_SIZE, pos.y, -unOffsetZ + height + DungeonData.DOOR_SIZE)
-            RoomRotation.WEST -> LorenzVec(-unOffsetZ + height + DungeonData.DOOR_SIZE, pos.y, unOffsetX)
+            RoomRotation.EAST -> LorenzVec(unOffsetZ, pos.y, -unOffsetX + maxDimension)
+            RoomRotation.SOUTH -> LorenzVec(-unOffsetX + maxDimension, pos.y, -unOffsetZ + maxDimension - extraOffset)
+            RoomRotation.WEST -> LorenzVec(-unOffsetZ + maxDimension - extraOffset, pos.y, unOffsetX)
         }
     }
 
@@ -32,9 +39,9 @@ data class DungeonRoomData(
     fun actualToRelative(pos: LorenzVec): LorenzVec {
         val (offsetX, offsetZ) = when (rotation) {
             RoomRotation.NORTH -> pos.x to pos.z
-            RoomRotation.EAST -> -pos.z + height + DungeonData.DOOR_SIZE to pos.x
-            RoomRotation.SOUTH -> -pos.x + width + DungeonData.DOOR_SIZE to -pos.z + height + DungeonData.DOOR_SIZE
-            RoomRotation.WEST -> pos.z to -pos.x + width + DungeonData.DOOR_SIZE
+            RoomRotation.EAST -> -pos.z + maxDimension to pos.x
+            RoomRotation.SOUTH -> -pos.x + maxDimension - extraOffset to -pos.z + maxDimension
+            RoomRotation.WEST -> pos.z to -pos.x + maxDimension - extraOffset
         }
         return LorenzVec(offsetX + x, pos.y, offsetZ + z)
     }

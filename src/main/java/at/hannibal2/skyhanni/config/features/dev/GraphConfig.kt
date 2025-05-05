@@ -18,7 +18,7 @@ class GraphConfig {
     @Expose
     @ConfigOption(
         name = "Place Key",
-        desc = "Place a new node at the current position. If a node is active automatically connects." +
+        desc = "Place a new node at the current position. If a node is active automatically connects. " +
             "Deletes a node if you are only 3 blocks away instead of placing a new one."
     )
     @ConfigEditorKeybind(defaultKey = Keyboard.KEY_F)
@@ -110,7 +110,7 @@ class GraphConfig {
     @Expose
     @ConfigOption(
         name = "Split Key",
-        desc = "Key for splitting an edge that is between the active and the closed node."
+        desc = "Key for splitting an edge that is between the active and the closest node."
     )
     @ConfigEditorKeybind(defaultKey = Keyboard.KEY_NONE)
     var splitKey: Int = Keyboard.KEY_NONE
@@ -123,7 +123,7 @@ class GraphConfig {
     @Expose
     @ConfigOption(
         name = "Edge Cycle",
-        desc = "Cycles the direction of the edge that is between the active and the closed node. (Used to make one-directional ways)"
+        desc = "Cycles the direction of the edge that is between the active and the closest node. (Used to make one-directional ways)"
     )
     @ConfigEditorKeybind(defaultKey = Keyboard.KEY_H)
     var edgeCycle: Int = Keyboard.KEY_H

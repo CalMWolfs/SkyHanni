@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.data.dungeon
 
-data class MapColorArray(private val colors: Array<Array<Int>>) {
+data class MapColorArray(private val colors: Array<IntArray>) {
     override fun toString(): String {
         val result = StringBuilder()
         for (row in colors) {
@@ -33,6 +33,6 @@ data class MapColorArray(private val colors: Array<Array<Int>>) {
     }
 
     companion object {
-        fun empty() = MapColorArray(Array(128) { Array(128) { 0 } })
+        fun empty() = MapColorArray(Array(128) { IntArray(128) })
     }
 }

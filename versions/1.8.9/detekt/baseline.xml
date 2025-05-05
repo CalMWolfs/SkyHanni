@@ -13,7 +13,6 @@
     <ID>CyclomaticComplexMethod:EnoughUpdatesManager.kt$EnoughUpdatesManager$private fun getPetLoreReplacements(petName: String?, tier: String?, level: Int): Map&lt;String, String&gt;</ID>
     <ID>CyclomaticComplexMethod:GardenCropMilestoneDisplay.kt$GardenCropMilestoneDisplay$private fun drawProgressDisplay(crop: CropType): List&lt;Renderable&gt;</ID>
     <ID>CyclomaticComplexMethod:GardenVisitorFeatures.kt$GardenVisitorFeatures$private fun readToolTip(visitor: VisitorApi.Visitor, itemStack: ItemStack?, toolTip: MutableList&lt;String&gt;)</ID>
-    <ID>CyclomaticComplexMethod:GardenVisitorTimer.kt$GardenVisitorTimer$@HandleEvent fun onSecondPassed(event: SecondPassedEvent)</ID>
     <ID>CyclomaticComplexMethod:GraphEditor.kt$GraphEditor$private fun input()</ID>
     <ID>CyclomaticComplexMethod:ItemAbilityCooldown.kt$ItemAbilityCooldown$@HandleEvent fun onPlaySound(event: PlaySoundEvent)</ID>
     <ID>CyclomaticComplexMethod:ItemDisplayOverlayFeatures.kt$ItemDisplayOverlayFeatures$private fun getStackTip(item: ItemStack): String?</ID>
@@ -216,10 +215,10 @@
     <ID>ReturnCount:BingoNextStepHelper.kt$BingoNextStepHelper$private fun readDescription(description: String): NextStep?</ID>
     <ID>ReturnCount:BroodmotherFeatures.kt$BroodmotherFeatures$private fun onStageUpdate()</ID>
     <ID>ReturnCount:ChatPeek.kt$ChatPeek$@JvmStatic fun peek(): Boolean</ID>
-    <ID>ReturnCount:ChestValue.kt$ChestValue$private fun isValidStorage(): Boolean</ID>
     <ID>ReturnCount:CollectionTracker.kt$CollectionTracker$private fun command(args: Array&lt;String&gt;)</ID>
     <ID>ReturnCount:CompactBingoChat.kt$CompactBingoChat$private fun onSkyBlockLevelUp(message: String): Boolean</ID>
     <ID>ReturnCount:CrimsonMinibossRespawnTimer.kt$CrimsonMinibossRespawnTimer$private fun updateArea()</ID>
+    <ID>ReturnCount:DungeonGraphs.kt$DungeonGraphs$private fun saveRoom(roomId: String)</ID>
     <ID>ReturnCount:EnchantParser.kt$EnchantParser$private fun parseEnchants( loreList: MutableList&lt;String&gt;, enchants: Map&lt;String, Int&gt;, chatComponent: IChatComponent?, )</ID>
     <ID>ReturnCount:EnoughUpdatesManager.kt$EnoughUpdatesManager$private fun getPetLoreReplacements(petName: String?, tier: String?, level: Int): Map&lt;String, String&gt;</ID>
     <ID>ReturnCount:FishingApi.kt$FishingApi$fun seaCreatureCount(entity: EntityArmorStand): Int</ID>
@@ -260,8 +259,6 @@
     <ID>TooManyFunctions:MobFinder.kt$MobFinder</ID>
     <ID>TooManyFunctions:NumberUtil.kt$NumberUtil</ID>
     <ID>TooManyFunctions:RegexUtils.kt$RegexUtils</ID>
-    <ID>TooManyFunctions:Renderable.kt$Renderable$Companion</ID>
-    <ID>TooManyFunctions:SkyBlockItemModifierUtils.kt$SkyBlockItemModifierUtils</ID>
     <ID>TooManyFunctions:SkyHanniTracker.kt$SkyHanniTracker&lt;Data : TrackerData&gt;</ID>
     <ID>TooManyFunctions:StringUtils.kt$StringUtils</ID>
     <ID>UnsafeCallOnNullableType:BucketedItemTrackerData.kt$BucketedItemTrackerData$it.value[internalName]?.hidden!!</ID>
@@ -300,6 +297,7 @@
     <ID>UnsafeCallOnNullableType:GardenCropMilestoneDisplay.kt$GardenCropMilestoneDisplay$cultivatingData[crop]!!</ID>
     <ID>UnsafeCallOnNullableType:GardenCropMilestonesCommunityFix.kt$GardenCropMilestonesCommunityFix$map[crop]!!</ID>
     <ID>UnsafeCallOnNullableType:GardenPlotIcon.kt$GardenPlotIcon$originalStack[index]!!</ID>
+    <ID>UnsafeCallOnNullableType:Graph.kt$Graph$newNodes[it.key]!!</ID>
     <ID>UnsafeCallOnNullableType:Graph.kt$Graph.Companion$position!!</ID>
     <ID>UnsafeCallOnNullableType:Graph.kt$distances.distances[end]!!</ID>
     <ID>UnsafeCallOnNullableType:GriffinBurrowHelper.kt$GriffinBurrowHelper$particleBurrows[targetLocation]!!</ID>

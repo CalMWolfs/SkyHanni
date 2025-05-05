@@ -28,4 +28,14 @@ object EnumUtils {
         }
     }
 
+    inline fun <reified T : Enum<T>> T.previous(wrap: Boolean = false): T? {
+        val values = enumValues<T>()
+        val previousIndex = ordinal - 1
+        return when {
+            previousIndex >= 0 -> values[previousIndex]
+            wrap -> values[values.size - 1]
+            else -> null
+        }
+    }
+
 }

@@ -45,7 +45,7 @@ data class DungeonRoom(val components: MutableList<DungeonPos>, var type: RoomTy
 
             if (shape in listOf(RoomShape.ONE_TWO, RoomShape.ONE_THREE, RoomShape.ONE_FOUR)) {
                 if (xComps.size == 1) return RoomRotation.NORTH
-                if (yComps.size == 1) return RoomRotation.EAST
+                if (yComps.size == 1) return RoomRotation.WEST
             }
 
             // L-Shape
@@ -62,9 +62,9 @@ data class DungeonRoom(val components: MutableList<DungeonPos>, var type: RoomTy
             val maxY = components.maxOf { it.y }
 
             if (intersectionX == minX && intersectionY == maxY) return RoomRotation.NORTH
-            if (intersectionX == maxX && intersectionY == maxY) return RoomRotation.EAST
+            if (intersectionX == minX && intersectionY == minY) return RoomRotation.EAST
             if (intersectionX == maxX && intersectionY == minY) return RoomRotation.SOUTH
-            if (intersectionX == minX && intersectionY == minY) return RoomRotation.WEST
+            if (intersectionX == maxX && intersectionY == maxY) return RoomRotation.WEST
 
             return null
         }
@@ -77,6 +77,10 @@ enum class RoomShape {
     ONE_FOUR,
     TWO_TWO,
     L_SHAPE,
+    ;
+
+    val isLongRoom
+        get() = this in listOf(ONE_THREE, ONE_FOUR, ONE_TWO)
 }
 
 enum class RoomType(val mapColor: Int) {

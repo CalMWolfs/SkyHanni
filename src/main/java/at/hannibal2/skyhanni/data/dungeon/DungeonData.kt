@@ -10,6 +10,7 @@ import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.BlockUtils.getBlockIdAt
 import at.hannibal2.skyhanni.utils.BlockUtils.getBlockMetadataAt
 import at.hannibal2.skyhanni.utils.BlockUtils.isAir
+import at.hannibal2.skyhanni.utils.EnumUtils.previous
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
@@ -75,7 +76,7 @@ object DungeonData {
 
         val mapData = mapItem.getMapData(mapStack, MinecraftCompat.localWorld) ?: return
 
-        val pixelData: Array<Array<Int>> = Array(128) { Array(128) { 0 } }
+        val pixelData: Array<IntArray> = Array(128) { IntArray(128) }
         val mapColors = mapData.colors
 
         for (x in 0 until 128) {
@@ -169,23 +170,20 @@ object DungeonData {
         }
 
         val currentRoom = currentRoom ?: return
-        currentRoom.rotation?.let { rotation ->
-            val cornerPos = worldPosFromMapPos(mapPosFromGridPos(currentRoom.topLeftPos))
-            val newRoom = DungeonRoomData(
-                cornerPos.x,
-                cornerPos.y,
-                currentRoom.width,
-                currentRoom.height,
-                rotation,
-                currentRoom.shape,
-                currentRoom.type,
-                roomId ?: "Unknown",
-            )
-            setCurrentRoomData(newRoom, currentRoom.topLeftPos)
-            return
-        }
+        val rotation = currentRoom.rotation ?: findRotation(currentRoom)
 
-        findRotationNew(currentRoom)
+        val cornerPos = worldPosFromMapPos(mapPosFromGridPos(currentRoom.topLeftPos))
+        val newRoom = DungeonRoomData(
+            cornerPos.x,
+            cornerPos.y,
+            currentRoom.width,
+            currentRoom.height,
+            rotation,
+            currentRoom.shape,
+            currentRoom.type,
+            roomId ?: "Unknown",
+        )
+        setCurrentRoomData(newRoom, currentRoom.topLeftPos)
     }
 
     private fun processRoom(pos: DungeonPos, color: Int) {
@@ -231,18 +229,17 @@ object DungeonData {
         }
     }
 
-    private fun findRotationNew(room: DungeonRoom) {
-        if (room.shape != RoomShape.ONE_ONE) {
-            ErrorManager.skyHanniError("Rotation wasn't found and room shape was not 1x1")
-        }
-
+    /**
+     * Finds the rotation of the room by checking the blocks at the corners of the room, like bettermap does
+     */
+    private fun findRotation(room: DungeonRoom): RoomRotation {
         val cornerPos = worldPosFromMapPos(mapPosFromGridPos(room.topLeftPos))
         val roofY = getRoofHeight(cornerPos.x, cornerPos.y)
 
         val p1 = LorenzVec(cornerPos.x, roofY, cornerPos.y).isCorrectBlock()
-        val p2 = LorenzVec(cornerPos.x + ROOM_SIZE - DOOR_SIZE, roofY, cornerPos.y).isCorrectBlock()
-        val p3 = LorenzVec(cornerPos.x, roofY, cornerPos.y + ROOM_SIZE - DOOR_SIZE).isCorrectBlock()
-        val p4 = LorenzVec(cornerPos.x + ROOM_SIZE - DOOR_SIZE, roofY, cornerPos.y + ROOM_SIZE - DOOR_SIZE).isCorrectBlock()
+        val p2 = LorenzVec(cornerPos.x + room.width, roofY, cornerPos.y).isCorrectBlock()
+        val p3 = LorenzVec(cornerPos.x, roofY, cornerPos.y + room.height).isCorrectBlock()
+        val p4 = LorenzVec(cornerPos.x + room.width, roofY, cornerPos.y + room.height).isCorrectBlock()
 
         val rotation: RoomRotation? = if (p1 && !p2 && !p3 && !p4) {
             RoomRotation.NORTH
@@ -257,18 +254,7 @@ object DungeonData {
         }
 
         rotation?.let {
-            val newRoom = DungeonRoomData(
-                cornerPos.x,
-                cornerPos.y,
-                room.width,
-                room.height,
-                it,
-                room.shape,
-                room.type,
-                roomId ?: "Unknown",
-            )
-            setCurrentRoomData(newRoom, room.topLeftPos)
-            return
+            return it
         }
 
         ErrorManager.skyHanniError(
