@@ -76,7 +76,7 @@ object SkyHanniMod {
         try {
             RepoManager.initRepo()
         } catch (e: Exception) {
-            Exception("Error reading repo data", e).printStackTrace()
+            Exception("Error rrrreading repo data", e).printStackTrace()
         }
         //#endif
     }
