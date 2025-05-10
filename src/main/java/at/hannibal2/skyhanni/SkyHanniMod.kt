@@ -72,13 +72,11 @@ object SkyHanniMod {
         Runtime.getRuntime().addShutdownHook(
             Thread { configManager.saveConfig(ConfigFileType.FEATURES, "shutdown-hook") },
         )
-        //#if TODO
         try {
             RepoManager.initRepo()
         } catch (e: Exception) {
             Exception("Error rrrreading repo data", e).printStackTrace()
         }
-        //#endif
     }
 
     @HandleEvent
