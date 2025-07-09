@@ -11,6 +11,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.net.http.HttpClient
@@ -19,7 +20,9 @@ import java.time.Duration
 
 abstract class PublishToModrinth : DefaultTask() {
 
-    private lateinit var jarDirectory: DirectoryProperty
+    @get:Internal
+    val jarDirectory = project.rootProject.layout.buildDirectory.dir("downloadedJars")
+
     private lateinit var changelog: String
     private lateinit var versionNumber: String
     private lateinit var modrinthToken: String
@@ -44,7 +47,6 @@ abstract class PublishToModrinth : DefaultTask() {
     }
 
     private fun initStuff() {
-        jarDirectory.set(project.rootProject.layout.buildDirectory.dir("downloadedJars"))
         changelog = project.findProperty("changelog") as String
         versionNumber = project.findProperty("modVersion") as String
         modrinthToken = project.findProperty("modrinthToken") as String? ?: ""
