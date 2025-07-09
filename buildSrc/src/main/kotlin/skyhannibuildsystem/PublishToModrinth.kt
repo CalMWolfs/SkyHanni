@@ -10,7 +10,8 @@ import com.github.mizosoft.methanol.MutableRequest
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.Directory
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -21,7 +22,7 @@ import java.time.Duration
 abstract class PublishToModrinth : DefaultTask() {
 
     @get:Internal
-    val jarDirectory = project.rootProject.layout.buildDirectory.dir("downloadedJars")
+    val jarDirectory: Provider<Directory>? = project.rootProject.layout.buildDirectory.dir("downloadedJars")
 
     private lateinit var changelog: String
     private lateinit var versionNumber: String
@@ -39,7 +40,7 @@ abstract class PublishToModrinth : DefaultTask() {
         println("version: $versionNumber")
         println("token: $modrinthToken")
 
-        val jars = jarDirectory.get().asFile.listFiles()?.filter { it.extension == "jar" }.orEmpty()
+        val jars = jarDirectory?.get()?.asFile?.listFiles()?.filter { it.extension == "jar" }.orEmpty()
 
         for (jar in jars) {
             processJar(jar)
