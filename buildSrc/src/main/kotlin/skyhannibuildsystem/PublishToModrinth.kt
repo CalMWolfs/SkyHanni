@@ -31,6 +31,10 @@ abstract class PublishToModrinth : DefaultTask() {
     fun publishToModrinth() {
 
         initStuff()
+        println("jarDir: $jarDirectory")
+        println("changelog: $changelog")
+        println("version: $versionNumber")
+        println("token: $modrinthToken")
 
         val jars = jarDirectory.get().asFile.listFiles()?.filter { it.extension == "jar" }.orEmpty()
 
@@ -43,7 +47,7 @@ abstract class PublishToModrinth : DefaultTask() {
         jarDirectory.set(project.rootProject.layout.buildDirectory.dir("downloadedJars"))
         changelog = project.findProperty("changelog") as String
         versionNumber = project.findProperty("modVersion") as String
-        modrinthToken = project.findProperty("modrinthToken") as String
+        modrinthToken = project.findProperty("modrinthToken") as String? ?: ""
     }
 
     private val jarNamePattern = "SkyHanni-(?<modVersion>[\\d.]+)-mc(?<mcVersion>[\\d.]+)\\.jar".toPattern()
