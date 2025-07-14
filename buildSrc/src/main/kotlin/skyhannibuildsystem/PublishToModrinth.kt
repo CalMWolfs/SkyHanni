@@ -35,6 +35,8 @@ abstract class PublishToModrinth : DefaultTask() {
     fun publishToModrinth() {
         initVariables()
         val jars = jarDirectory?.get()?.asFile?.listFiles()?.filter { it.extension == "jar" }.orEmpty()
+        changelog = jarDirectory?.get()?.asFile?.resolve("changelog.txt")?.readText()
+            ?: throw IllegalArgumentException("Changelog file not found in ${jarDirectory?.get()?.asFile?.path}")
 
         for (jar in jars) {
             processJar(jar)
@@ -42,7 +44,6 @@ abstract class PublishToModrinth : DefaultTask() {
     }
 
     private fun initVariables() {
-        changelog = project.findProperty("changelog") as String
         versionNumber = project.findProperty("modVersion") as String
         modrinthToken = project.findProperty("modrinthToken") as String
     }
