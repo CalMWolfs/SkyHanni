@@ -59,7 +59,7 @@ jobs:
 
             -   name: Build Modrinth Metadata
                 run: |
-                    echo "{{ steps.get_changelog.outputs.changelog }}" > build/downloadedJars/changelog.txt
+                    echo "${{ steps.get_changelog.outputs.changelog }}" > build/downloadedJars/changelog.txt
 
             -   name: Build Shared Variables Submodule
                 run: ./gradlew :sharedVariables:build
