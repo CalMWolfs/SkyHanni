@@ -39,6 +39,8 @@ abstract class PublishToModrinth : DefaultTask() {
             ?: throw IllegalArgumentException("Changelog file not found in ${jarDirectory?.get()?.asFile?.path}")
 
         println("changelog: $changelog")
+        println("count: ${changelog.count { it == '`' }}")
+        println("chars: ${changelog.length}")
 
         for (jar in jars) {
             processJar(jar)
