@@ -42,24 +42,22 @@ jobs:
                 run: ls -la build/downloadedJars
 
             -   name: Get changelog from release tag
-                id: get_changelog
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 run: |
                     release_info=$(gh release view "${UPDATE_VERSION}" --repo "${REPO}" --json body -q .body)
-                    echo "changelog<<EOF" >> $GITHUB_OUTPUT
-                    echo "$release_info" >> $GITHUB_OUTPUT
-                    echo "EOF" >> $GITHUB_OUTPUT
+                    echo "CHANGELOG_FILE=changelog.txt" >> $GITHUB_ENV
+
+            -   name: Save changelog to file
+                run: |
+                    cat "${CHANGELOG_FILE}" > build/downloadedJars/changelog.txt
 
             -   name: Print environment variables
                 run: |
                     echo "UPDATE_VERSION=${UPDATE_VERSION}"
                     echo "REPO=${REPO}"
-                    echo "CHANGELOG=${{ steps.get_changelog.outputs.changelog }}"
-
-            -   name: Build Modrinth Metadata
-                run: |
-                    echo "${{ steps.get_changelog.outputs.changelog }}" > build/downloadedJars/changelog.txt
+                    echo "CHANGELOG:
+                    cat "build/downloadedJars/changelog.txt"
 
             -   name: Build Shared Variables Submodule
                 run: ./gradlew :sharedVariables:build
